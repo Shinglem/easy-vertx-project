@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=io.github.shinglem.easyvertx.web.spring.SpringWebVerticle
+  # ,io.github.shinglem.easyvertx.core.spring.EnvironmentHelper

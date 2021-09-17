@@ -1,0 +1,19 @@
+logging:
+  level:
+    root: DEBUG
+    org.springframework.boot: INFO
+    org.springframework: INFO
+    sun.rmi: INFO
+    sun.util: INFO
+    io.netty: INFO
+    javax.management: INFO
+  pattern:
+    console: "[ %-5level ] [%date{yyyy-MM-dd HH:mm:ss.SSS}] %class{96} %logger{96} [%line] [%thread]- %msg%n"
+
+vertx:
+  config:
+    verticles:
+      -
+        class: maintest.vertxtest.MySpringVerticle
+        deploymentOptions:
+           instances: 1

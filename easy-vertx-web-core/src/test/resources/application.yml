@@ -1,0 +1,13 @@
+vertx:
+  config:
+    verticles:
+        -
+          class: test.verticles.UsServerVerticle
+
+
+
+UsServerVerticle:
+  httpServerOptions:
+    port: 39000
+
+
