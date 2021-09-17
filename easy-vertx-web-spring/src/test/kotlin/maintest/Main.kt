@@ -1,22 +1,15 @@
 package maintest
 
-import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper
-import io.github.shinglem.easyvertx.core.def.json.path
-import io.github.shinglem.easyvertx.core.spring.getConfigMap
 import io.github.shinglem.easyvertx.core.spring.getHttpServerOptions
 import io.github.shinglem.easyvertx.web.spring.base.SpringBaseRoute
 import io.github.shinglem.easyvertx.web.spring.base.SpringRestfulRoute
 import io.vertx.core.http.HttpServerOptions
-import io.vertx.core.json.JsonObject
-import io.vertx.kotlin.core.json.get
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.core.env.AbstractEnvironment
-import org.springframework.core.env.MapPropertySource
 
 @SpringBootApplication
 open class Main {

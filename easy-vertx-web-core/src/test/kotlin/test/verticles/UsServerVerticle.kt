@@ -1,9 +1,9 @@
 package test.verticles
 
 
-import io.github.shinglem.easyvertx.core.def.ConfigLoader
+import io.github.shinglem.easyvertx.core.ConfigLoader
 import io.github.shinglem.easyvertx.core.def.DefaultConfigLoader
-import io.github.shinglem.easyvertx.core.def.json.path
+import io.github.shinglem.easyvertx.core.json.path
 import io.github.shinglem.easyvertx.web.core.base.BaseRoute
 import io.github.shinglem.easyvertx.web.core.base.RestfulRoute
 import io.github.shinglem.easyvertx.web.core.impl.WebAbstractVerticle

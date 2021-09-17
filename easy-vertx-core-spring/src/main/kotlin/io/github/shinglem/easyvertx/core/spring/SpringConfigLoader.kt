@@ -1,7 +1,7 @@
 package io.github.shinglem.easyvertx.core.spring
 
-import io.github.shinglem.easyvertx.core.def.exception.ConfigNotLoadException
-import io.github.shinglem.easyvertx.core.def.ConfigLoader
+import io.github.shinglem.easyvertx.core.exception.ConfigNotLoadException
+import io.github.shinglem.easyvertx.core.ConfigLoader
 import io.vertx.core.json.JsonObject
 import org.slf4j.LoggerFactory
 import kotlin.properties.Delegates

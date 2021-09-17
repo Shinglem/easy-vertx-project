@@ -1,7 +1,9 @@
 package io.github.shinglem.easyvertx.core.def
 
-import io.github.shinglem.easyvertx.core.def.json.path
-import io.github.shinglem.easyvertx.core.def.json.registerJsonMapper
+import io.github.shinglem.easyvertx.core.ConfigLoader
+import io.github.shinglem.easyvertx.core.VertxProducer
+import io.github.shinglem.easyvertx.core.json.path
+import io.github.shinglem.easyvertx.core.json.registerJsonMapper
 import io.vertx.core.Vertx
 import io.vertx.core.VertxOptions
 import io.vertx.core.json.JsonObject

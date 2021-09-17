@@ -1,7 +1,7 @@
-package io.github.shinglem.easyvertx.core.def.json
+package io.github.shinglem.easyvertx.core.json
 
-import io.github.shinglem.easyvertx.core.def.exception.JsonPathException
-import io.github.shinglem.easyvertx.core.def.exception.JsonTypeException
+import io.github.shinglem.easyvertx.core.exception.JsonPathException
+import io.github.shinglem.easyvertx.core.exception.JsonTypeException
 import io.vertx.core.json.JsonObject
 import kotlin.reflect.KClass
 

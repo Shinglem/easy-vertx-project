@@ -1,4 +1,4 @@
-package io.github.shinglem.easyvertx.core.def
+package io.github.shinglem.easyvertx.core
 
 
 

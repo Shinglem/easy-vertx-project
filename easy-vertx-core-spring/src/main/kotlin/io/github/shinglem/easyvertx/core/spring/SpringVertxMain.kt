@@ -1,10 +1,9 @@
 package io.github.shinglem.easyvertx.core.spring
 
-import io.github.shinglem.easyvertx.core.*
-import io.github.shinglem.easyvertx.core.def.ConfigLoader
-import io.github.shinglem.easyvertx.core.def.Main
-import io.github.shinglem.easyvertx.core.def.VertxProducer
-import io.github.shinglem.easyvertx.core.def.json.path
+import io.github.shinglem.easyvertx.core.ConfigLoader
+import io.github.shinglem.easyvertx.core.Main
+import io.github.shinglem.easyvertx.core.VertxProducer
+import io.github.shinglem.easyvertx.core.json.path
 import io.vertx.core.DeploymentOptions
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonArray

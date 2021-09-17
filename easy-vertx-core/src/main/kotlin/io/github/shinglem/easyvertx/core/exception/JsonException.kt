@@ -1,15 +1,13 @@
-package io.github.shinglem.easyvertx.core.def.exception
+package io.github.shinglem.easyvertx.core.exception
 
-class ConfigNotLoadException : Exception{
+class JsonPathException : Exception{
     constructor()
     constructor(msg: String) :super(msg)
     constructor(msg : String , throwable: Throwable) : super(msg , throwable)
 }
 
-
-class GetClassException : Exception{
+class JsonTypeException : Exception{
     constructor()
     constructor(msg: String) :super(msg)
     constructor(msg : String , throwable: Throwable) : super(msg , throwable)
 }
-

@@ -1,6 +1,6 @@
 package io.github.shinglem.easyvertx.core.spring
 
-import io.github.shinglem.easyvertx.core.def.json.path
+import io.github.shinglem.easyvertx.core.json.path
 import io.vertx.core.http.HttpServerOptions
 import io.vertx.core.json.JsonObject
 import org.springframework.context.ApplicationContext

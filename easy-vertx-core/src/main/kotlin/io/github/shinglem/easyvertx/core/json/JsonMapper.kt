@@ -1,4 +1,4 @@
-package io.github.shinglem.easyvertx.core.def.json
+package io.github.shinglem.easyvertx.core.json
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.JsonParser

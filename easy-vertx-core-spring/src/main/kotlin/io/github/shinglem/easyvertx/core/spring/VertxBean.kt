@@ -1,18 +1,14 @@
 package io.github.shinglem.easyvertx.core.spring
 
-import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper
-import io.github.shinglem.easyvertx.core.def.ConfigLoader
-import io.github.shinglem.easyvertx.core.def.Main
-import io.github.shinglem.easyvertx.core.def.VertxProducer
+import io.github.shinglem.easyvertx.core.ConfigLoader
+import io.github.shinglem.easyvertx.core.Main
+import io.github.shinglem.easyvertx.core.VertxProducer
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import javax.annotation.PostConstruct
-import kotlin.properties.Delegates
 
 
 @Configuration
