@@ -10,7 +10,7 @@ allprojects {
     repositories {
         mavenLocal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://maven.aliyun.com/nexus/content/groups/public/")
+//        maven("https://maven.aliyun.com/nexus/content/groups/public/")
         maven("https://dl.bintray.com/kotlin/exposed")
         maven("https://jitpack.io")
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
