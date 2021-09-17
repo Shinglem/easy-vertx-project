@@ -1,6 +1,6 @@
 package io.github.shinglem.easyvertx.core.spring
 
-import com.xy.common.util.exception.ConfigNotLoadException
+import io.github.shinglem.easyvertx.core.def.exception.ConfigNotLoadException
 import io.github.shinglem.easyvertx.core.def.ConfigLoader
 import io.vertx.core.json.JsonObject
 import org.slf4j.LoggerFactory

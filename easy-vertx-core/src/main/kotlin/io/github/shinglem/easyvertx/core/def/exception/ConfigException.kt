@@ -1,4 +1,4 @@
-package com.xy.common.util.exception
+package io.github.shinglem.easyvertx.core.def.exception
 
 class ConfigNotLoadException : Exception{
     constructor()

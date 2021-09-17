@@ -2,7 +2,7 @@ package io.github.shinglem.easyvertx.core.def
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.xy.common.util.exception.ConfigNotLoadException
+import io.github.shinglem.easyvertx.core.def.exception.ConfigNotLoadException
 
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
