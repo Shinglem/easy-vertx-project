@@ -1,12 +1,12 @@
 package io.github.shinglem.easyvertx.web.core.impl;
 
 
+import io.vertx.core.http.HttpServerRequest;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import io.vertx.core.http.HttpServerRequest;
 
 /**
  * Identifies a route method parameter that should be injected with a value returned from
@@ -20,7 +20,7 @@ import io.vertx.core.http.HttpServerRequest;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-public @interface Param {
+public @interface BodyParam {
 
     /**
      * Constant value for {@link #value()} indicating that the annotated element's name should be used as-is.

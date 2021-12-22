@@ -1,11 +1,22 @@
 package io.github.shinglem.easyvertx.web.core
 
+
+
 class RouteRegistException(msg : String) : Exception(msg)
 
 
 class ParamRegistException(msg : String) : Exception(msg)
 
-class ParamNotSupportException(msg : String) : Exception(msg)
+class ParamNotSupportException : Exception{
+
+    constructor(message: String?, cause: Throwable?) :super(message,cause){
+
+    }
+
+    constructor(msg: String):super(msg) {
+
+    }
+}
 
 class FunctionNotSupportException(msg : String) : Exception(msg)
 

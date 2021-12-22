@@ -1,6 +1,6 @@
 plugins {
     java
-    kotlin("jvm") version "1.5.21"
+    kotlin("jvm") version "1.6.10"
     `maven-publish`
 }
 val projectVersion :String by project
@@ -10,7 +10,7 @@ allprojects {
     repositories {
         mavenLocal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-//        maven("https://maven.aliyun.com/nexus/content/groups/public/")
+        maven("https://maven.aliyun.com/nexus/content/groups/public/")
         maven("https://dl.bintray.com/kotlin/exposed")
         maven("https://jitpack.io")
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
@@ -62,16 +62,16 @@ tasks.getByName<Test>("test") {
 tasks {
 
     compileJava {
-        sourceCompatibility = JavaVersion.VERSION_16.toString()
+        sourceCompatibility = JavaVersion.VERSION_17.toString()
     }
     compileTestJava {
-        sourceCompatibility = JavaVersion.VERSION_16.toString()
+        sourceCompatibility = JavaVersion.VERSION_17.toString()
     }
     compileKotlin {
-        kotlinOptions.jvmTarget = JavaVersion.VERSION_16.toString()
+        kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = JavaVersion.VERSION_16.toString()
+        kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
 }

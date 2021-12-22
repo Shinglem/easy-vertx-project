@@ -399,8 +399,8 @@ fun createParamMap(fc: KFunction<*>, instance: Any): Map<KParameter, (RoutingCon
                     }
                     param to f
                 }
-                ann is Param -> {
-                    val name = if (ann.value == Param.ELEMENT_NAME) {
+                ann is PathParam -> {
+                    val name = if (ann.value == PathParam.ELEMENT_NAME) {
                         param.name
                     } else {
                         ann.value

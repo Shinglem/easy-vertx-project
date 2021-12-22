@@ -16,6 +16,7 @@ repositories {
 
 dependencies {
     api(project(":easy-vertx-core"))
+//    api(project(":easy-vertx-core-default"))
 
     //vertx
     api(group = "io.vertx", name = "vertx-web", version = vertxVersion)
