@@ -1,6 +1,5 @@
 package io.github.shinglem.easyvertx.web.core
 
-import io.github.shinglem.easyvertx.web.core.handlers.*
 import io.github.shinglem.easyvertx.web.core.impl.listToChain
 import io.vertx.core.Context
 import io.vertx.core.Vertx
@@ -13,7 +12,6 @@ abstract class WebServerVerticle : CoroutineVerticle() {
     private val logger = LoggerFactory.getLogger(this::class.java.name)
     abstract val httpServerOptions: HttpServerOptions
     protected lateinit var router: Router
-        private set
 
 
     override fun init(vertx: Vertx, context: Context) {
@@ -45,9 +43,14 @@ abstract class WebServerVerticle : CoroutineVerticle() {
         }
 
 
-        val controllers = controllerResolvers.flatMap {
-            it.getControllers()
-        }
+        val controllers = controllerResolvers
+            .map {
+                it.config = config
+                it
+            }
+            .flatMap {
+                it.getControllers()
+            }
         controllers.forEach {
             firstControllerHandler.controllerHandlerChainProp = ControllerHandlerChainProp(
                 controller = it,
@@ -68,8 +71,6 @@ abstract class WebServerVerticle : CoroutineVerticle() {
         val server = vertx.createHttpServer(httpServerOptions)
 
         registerControllers()
-
-        coroutineContext
 
 
 

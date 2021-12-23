@@ -20,9 +20,9 @@ open class DefaultVertxMain(val configLoader: ConfigLoader = DefaultConfigLoader
     init {
 
         System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory")
-        System.setProperty("user.timezone", "GMT +08")
-        System.setProperty("kotlinx.coroutines.debug", "")
-        System.setProperty("java.net.preferIPv4Stack", "true")
+//        System.setProperty("user.timezone", "GMT +08")
+//        System.setProperty("kotlinx.coroutines.debug", "")
+//        System.setProperty("java.net.preferIPv4Stack", "true")
 
     }
 
@@ -63,6 +63,10 @@ open class DefaultVertxMain(val configLoader: ConfigLoader = DefaultConfigLoader
 
     override fun vertx(): Vertx {
         return vertx
+    }
+
+    override fun config(): JsonObject {
+        return configLoader.config()
     }
 
 

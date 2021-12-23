@@ -21,13 +21,16 @@ open class DefaultVertxProducer(
 ) : VertxProducer {
     private final val logger = LoggerFactory.getLogger(this::class.java.name)
 
-    private var vertx: Vertx? = null
+    private val vertx: Vertx by lazy {
+        vertxInit()
+    }
+
     private val vertxOptions = configLoader.config().path<JsonObject>("vertxOptions") ?: JsonObject()
 
 
-    init {
-        vertxInit()
-    }
+//    init {
+//        vertxInit()
+//    }
 
 
     private fun localIp(): String {
@@ -36,10 +39,10 @@ open class DefaultVertxProducer(
     }
 
 
-    private fun vertxInit() {
-
+    private fun vertxInit() : Vertx {
         logger.debug("----- init -----")
 
+        val vertx : Vertx
         logger.debug("----- register json mapper -----")
         registerJsonMapper()
         logger.debug("----- get local ip -----")
@@ -70,6 +73,7 @@ open class DefaultVertxProducer(
             }
         })
 
+        return vertx
 
     }
 

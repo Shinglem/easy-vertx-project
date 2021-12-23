@@ -4,7 +4,13 @@ vertx:
         -
 #          class: test.verticles.UsServerVerticle
           class: io.github.shinglem.easyvertx.web.core.simple.SimpleWebServerVerticle
-
+          deploymentOptions:
+            instances: 2
+            config:
+              httpServerOptions:
+                  port: 39000
+              SimpleConfigControllerResolver:
+                  controllers: [ "test2.controller.RouteTestController" ]
 
 
 SimpleWebServerVerticle:

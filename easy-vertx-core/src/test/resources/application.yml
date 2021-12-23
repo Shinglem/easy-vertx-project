@@ -1,0 +1,16 @@
+vertx:
+  config:
+    verticles:
+        -
+          class: test.TestVerticle
+          deploymentOptions:
+            instances: 2
+            config:
+              aaa: "bbb"
+
+
+
+
+
+
+

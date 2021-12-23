@@ -12,26 +12,26 @@ import io.vertx.core.json.JsonObject
 import org.slf4j.LoggerFactory
 import kotlin.reflect.full.createInstance
 
-open class SimpleWebServerVerticle  : WebServerVerticle() {
+open class SimpleWebServerVerticle : WebServerVerticle() {
     private val logger = LoggerFactory.getLogger(this::class.java.name)
 
-    private val configLoader: ConfigLoader = DefaultConfigLoader()
+    //    private val configLoader: ConfigLoader = DefaultConfigLoader()
     open val webConfig by lazy {
-        configLoader.config().path("${this::class.simpleName}") ?: JsonObject()
+        config ?: JsonObject()
     }
-    open val port = webConfig.path("httpServerOptions.port")?:8080
-    open override val  httpServerOptions by lazy {
+    open val port by lazy { webConfig.path("httpServerOptions.port") ?: 8080 }
+    open override val httpServerOptions by lazy {
         webConfig.path<JsonObject>("httpServerOptions")?.let { HttpServerOptions(it).setPort(port) }
             ?: HttpServerOptions()
     }
-    open override val  controllerResolvers by lazy {
+    open override val controllerResolvers by lazy {
         webConfig.path<JsonArray>("controllerResolvers")
             ?.let { it.list as List<String> }
             ?.map {
                 Class.forName(it).kotlin.createInstance() as ControllerResolver
             }
             ?: kotlin.run {
-                logger.debug("no controllerResolvers define , use ConfigControllerResolver")
+                logger.debug("no controllerResolvers define , use SimpleConfigControllerResolver")
                 listOf(SimpleConfigControllerResolver())
             }
     }
@@ -54,7 +54,7 @@ open class SimpleWebServerVerticle  : WebServerVerticle() {
             }
             ?: kotlin.run {
                 logger.debug("no routeHandlers define , use SimpleRouteHandler")
-                listOf(SimpleRouteHandler() , SimpleRouteFileterHandler())
+                listOf(SimpleRouteHandler(), SimpleRouteFileterHandler())
             }
     }
     override val paramHandlers: List<ParamHandler> by lazy {
@@ -65,7 +65,13 @@ open class SimpleWebServerVerticle  : WebServerVerticle() {
             }
             ?: kotlin.run {
                 logger.debug("no paramHandlers define , use SimpleBodyParamHandler , SimplePathParamHandler , SimpleQueryParamHandler , SimpleRcParamHandler , SimpleHeaderParamHandler  ")
-                listOf(SimpleBodyParamHandler() , SimplePathParamHandler() , SimpleQueryParamHandler() , SimpleRcParamHandler() , SimpleHeaderParamHandler())
+                listOf(
+                    SimpleBodyParamHandler(),
+                    SimplePathParamHandler(),
+                    SimpleQueryParamHandler(),
+                    SimpleRcParamHandler(),
+                    SimpleHeaderParamHandler()
+                )
             }
     }
     override val resultHandlers: List<ResultHandler> by lazy {

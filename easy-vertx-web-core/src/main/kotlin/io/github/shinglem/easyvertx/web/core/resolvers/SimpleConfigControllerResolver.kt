@@ -5,12 +5,15 @@ import io.github.shinglem.easyvertx.core.def.DefaultConfigLoader
 import io.github.shinglem.easyvertx.core.json.path
 import io.github.shinglem.easyvertx.web.core.ControllerResolver
 import io.vertx.core.json.JsonArray
+import io.vertx.core.json.JsonObject
 import kotlin.reflect.full.createInstance
 
 open class SimpleConfigControllerResolver : ControllerResolver {
-    private val configLoader: ConfigLoader = DefaultConfigLoader()
+
+    override var config: JsonObject = JsonObject()
+//    private val configLoader: ConfigLoader = DefaultConfigLoader()
     open val controllerNames by lazy {
-        val json = configLoader.config().path("${this::class.simpleName}.controllers") ?: JsonArray()
+        val json = config.path("${this::class.simpleName}.controllers") ?: JsonArray()
         json.list as List<String>
     }
 

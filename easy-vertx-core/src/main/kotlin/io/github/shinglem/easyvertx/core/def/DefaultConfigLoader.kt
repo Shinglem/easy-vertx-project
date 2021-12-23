@@ -19,23 +19,29 @@ open class DefaultConfigLoader : ConfigLoader {
 
 
     private final val logger = LoggerFactory.getLogger(this::class.java.name)
-    private var configCopy: JsonObject by Delegates.notNull()
-    private var vertxConfig: JsonObject by Delegates.notNull()
 
-    private val mapper = ObjectMapper(YAMLFactory())
-
-    init {
+    //    private var configCopy: JsonObject by Delegates.notNull()
+    private val vertxConfig: JsonObject by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
         loadConfig()
     }
 
+    private val mapper = ObjectMapper(YAMLFactory())
+
+//    init {
+//        loadConfig()
+//    }
+
 
     override fun config(): JsonObject {
-        return configCopy
+        return vertxConfig
     }
 
 
-    override fun loadConfig() {
-        runBlocking {
+    override fun loadConfig(): JsonObject {
+        return runBlocking {
+
+            val vertxConfig: JsonObject
+
             logger.debug("----- load config -----")
             val tempVertx = Vertx.vertx()
 
@@ -69,13 +75,15 @@ open class DefaultConfigLoader : ConfigLoader {
             vertxConfig = configInner.mergeIn(configOuter)
             logger.debug("load config : ${vertxConfig.encodePrettily()}")
 
-            configCopy = vertxConfig.copy()
+//            configCopy = vertxConfig.copy()
+            tempVertx.close().await()
+
+            return@runBlocking vertxConfig
         }
     }
 
     override fun mergeConfig(json: JsonObject) {
         vertxConfig.mergeIn(json) ?: throw ConfigNotLoadException("config not load")
-        configCopy = vertxConfig.copy()
     }
 
 }

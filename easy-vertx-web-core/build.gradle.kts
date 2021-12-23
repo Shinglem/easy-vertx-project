@@ -27,7 +27,7 @@ dependencies {
     api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = kotlinCoroutineVersion)
     api(kotlin("reflect"))
     testApi("ch.qos.logback", "logback-classic", "1.2.5")
-    testApi(project(":easy-vertx-core-default"))
+//    testApi(project(":easy-vertx-core-default"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }

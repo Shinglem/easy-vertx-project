@@ -2,6 +2,7 @@ package io.github.shinglem.easyvertx.web.core
 
 import io.vertx.core.Vertx
 import io.vertx.core.buffer.Buffer
+import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.Route
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
@@ -12,6 +13,7 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.KType
 
 interface ControllerResolver {
+    var config : JsonObject
 
     fun getControllers(): List<Any>
 }
