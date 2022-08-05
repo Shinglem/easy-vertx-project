@@ -2,24 +2,26 @@ vertx:
   config:
     verticles:
         -
-#          class: test.verticles.UsServerVerticle
-          class: io.github.shinglem.easyvertx.web.core.simple.SimpleWebServerVerticle
+          class: io.github.shinglem.easyvertx.web.core.SimpleWebServerVerticle
           deploymentOptions:
-            instances: 2
             config:
               httpServerOptions:
                   port: 39000
               SimpleConfigControllerResolver:
-                  controllers: [ "test2.controller.RouteTestController" ]
+                  controllers: [
+                      "webtestexample.routebase.EmptyRouteBase",
+                      "webtestexample.routebase.NotEmptyRouteBase",
+                      "webtestexample.routebase.Routes",
+                  ]
 
 
-SimpleWebServerVerticle:
-  httpServerOptions:
-    port: 39000
-#  controllerResolvers: ["io.github.shinglem.easyvertx.web.core.resolvers.SimpleConfigControllerResolver"]
-#  routeHandlers: ["io.github.shinglem.easyvertx.web.core.handlers.SimpleRouteHandler"]
-
-SimpleConfigControllerResolver:
-  controllers: ["test2.controller.RouteTestController"]
+#SimpleWebServerVerticle:
+#  httpServerOptions:
+#    port: 39000
+##  controllerResolvers: ["io.github.shinglem.easyvertx.web.core.resolvers.SimpleConfigControllerResolver"]
+##  routeHandlers: ["io.github.shinglem.easyvertx.web.core.handlers.SimpleRouteHandler"]
+#
+#SimpleConfigControllerResolver:
+#  controllers: ["test2.controller.RouteTestController"]
 
 

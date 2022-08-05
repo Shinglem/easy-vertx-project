@@ -1,7 +1,7 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        gradlePluginPortal()
         mavenLocal()
 //        maven("https://maven.aliyun.com/nexus/content/groups/public/")
         maven("https://dl.bintray.com/kotlin/exposed")
@@ -35,3 +35,4 @@ include("easy-vertx-core-spring")
 //include("easy-vertx-core-default")
 include("easy-vertx-web-core")
 include("easy-vertx-web-spring")
+include("easy-vertx-util")

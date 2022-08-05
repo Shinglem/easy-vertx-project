@@ -1,6 +1,6 @@
 package io.github.shinglem.easyvertx.web.spring
 
-import io.github.shinglem.easyvertx.web.core.impl.WebAbstractVerticle
+import io.github.shinglem.easyvertx.web.core.dep.impl.WebAbstractVerticle
 import io.vertx.core.http.HttpServerOptions
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

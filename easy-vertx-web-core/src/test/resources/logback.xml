@@ -187,6 +187,8 @@
     <logger name="javax.management" level="ERROR"/>
     <logger name="io.vertx" level="INFO"/>
     <logger name="sun.rmi" level="ERROR"/>
+    <logger name="io.vertx.config.impl.spi.FileConfigStore" level="WARN"/>
+    <logger name="ConfigurationProvider#io.vertx.config.impl.spi" level="WARN"/>
     <logger name="java.io.serialization" level="ERROR"></logger>
     <logger name="org.apache.zookeeper" level="INFO"></logger>
     <root level="ALL">

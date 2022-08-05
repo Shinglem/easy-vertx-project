@@ -1,17 +1,10 @@
 package test
 
-import io.vertx.core.DeploymentOptions
+import io.github.shinglem.easyvertx.core.def.VertxMain
 import io.vertx.core.Vertx
-import io.vertx.core.http.HttpServer
 import io.vertx.core.impl.ContextInternal
 import io.vertx.kotlin.coroutines.CoroutineVerticle
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import java.util.Collections.synchronizedMap
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.random.Random
 
 val countMap: MutableMap<String, Int> = synchronizedMap(mutableMapOf("count" to 0))
@@ -50,5 +43,5 @@ class RawTest : CoroutineVerticle() {
 
 
 fun main() {
-    Vertx.vertx().deployVerticle(RawTest::class.java, DeploymentOptions().setInstances(3))
+
 }

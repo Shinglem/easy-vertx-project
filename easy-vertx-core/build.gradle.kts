@@ -1,7 +1,6 @@
 plugins {
     java
     kotlin("jvm")
-    `maven-publish`
 }
 
 group = "io.github.shinglem.esay-vertx-project"
@@ -20,6 +19,10 @@ dependencies {
     api(group = "io.vertx", name = "vertx-core", version = vertxVersion)
     api(group = "io.vertx", name = "vertx-lang-kotlin", version = vertxVersion)
     api(group = "io.vertx", name = "vertx-lang-kotlin-coroutines", version = vertxVersion)
+    api(group = "io.vertx", name = "vertx-config", version = vertxVersion)
+    api(group = "io.vertx", name = "vertx-config-yaml", version = vertxVersion){
+        exclude("com.fasterxml.jackson.core:jackson-databind")
+    }
 
     //jackson
     api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
@@ -66,16 +69,3 @@ tasks {
 
 }
 
-
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "io.github.shinglem.easy-vertx-project"
-            artifactId = "easy-vertx-core"
-
-
-            from(components["java"])
-        }
-    }
-}

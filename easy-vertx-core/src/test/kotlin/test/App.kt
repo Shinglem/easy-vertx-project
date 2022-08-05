@@ -1,8 +1,14 @@
 package test
 
-import io.github.shinglem.easyvertx.core.def.DefaultVertxMain
+import io.vertx.core.json.JsonObject
 
 fun main(args: Array<String>) {
-    DefaultVertxMain().start()
+//    DefaultVertxMain().start()
+    val inner = mapOf("aaa" to  "bbb")
+    val outer = mapOf("q" to inner)
+    val json = JsonObject(outer)
+    val a = json.getJsonObject("q")
+    println(a.encodePrettily())
 }
+
 

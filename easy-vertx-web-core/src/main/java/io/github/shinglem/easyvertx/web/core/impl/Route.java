@@ -178,7 +178,7 @@ public @interface Route {
      * @return the path
      * @see Router#route(String)
      */
-    String path() default "";
+    String path() default "/";
 
     /**
      * @return the path regex

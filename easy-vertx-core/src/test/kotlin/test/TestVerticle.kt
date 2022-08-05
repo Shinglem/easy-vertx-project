@@ -1,7 +1,9 @@
 package test
 
+import io.github.shinglem.easyvertx.core.def.VertxMain
 import io.vertx.core.Vertx
 import io.vertx.kotlin.coroutines.CoroutineVerticle
+import org.junit.jupiter.api.Test
 
 open class TestVerticle : CoroutineVerticle() {
 
@@ -17,4 +19,16 @@ open class TestVerticle : CoroutineVerticle() {
 
 
     }
+}
+
+
+open class TestMain {
+
+
+    @Test
+    open fun testMain() {
+        VertxMain().start()
+    }
+
+
 }

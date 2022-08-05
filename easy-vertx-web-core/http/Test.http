@@ -1,0 +1,4 @@
+GET http://localhost:39000/api/method/get
+Accept: application/json
+
+###

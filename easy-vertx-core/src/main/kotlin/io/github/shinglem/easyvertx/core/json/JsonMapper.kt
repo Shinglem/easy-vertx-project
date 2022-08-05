@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.TreeNode
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.ArrayNode
@@ -30,14 +31,20 @@ fun registerJsonMapper() {
     DatabindCodec.mapper().registerModule(module)
     DatabindCodec.prettyMapper().registerModule(module)
 
-    DatabindCodec.mapper().registerModule(KotlinModule())
-    DatabindCodec.prettyMapper().registerModule(KotlinModule())
+    DatabindCodec.mapper().registerModule(KotlinModule.Builder().build())
+    DatabindCodec.prettyMapper().registerModule(KotlinModule.Builder().build())
 
     DatabindCodec.mapper().setSerializationInclusion(JsonInclude.Include.NON_NULL)
     DatabindCodec.prettyMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL)
     DatabindCodec.mapper().registerModule(Jdk8Module()).registerModule(JavaTimeModule())
     DatabindCodec.prettyMapper().registerModule(Jdk8Module()).registerModule(JavaTimeModule())
     DatabindCodec.mapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES , false)
+    DatabindCodec.prettyMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES , false)
+    DatabindCodec.mapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS , false)
+    DatabindCodec.prettyMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS , false)
+
+
+
 }
 
 internal class JsonObjectDeserializer : JsonDeserializer<JsonObject>() {

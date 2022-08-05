@@ -16,18 +16,20 @@ repositories {
 
 dependencies {
     api(project(":easy-vertx-core"))
-//    api(project(":easy-vertx-core-default"))
+    api(project(":easy-vertx-util"))
 
     //vertx
     api(group = "io.vertx", name = "vertx-web", version = vertxVersion)
 
-
+    api("com.google.guava:guava:31.1-jre")
     //kotlin
     api(kotlin("stdlib"))
     api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = kotlinCoroutineVersion)
     api(kotlin("reflect"))
     testApi("ch.qos.logback", "logback-classic", "1.2.5")
 //    testApi(project(":easy-vertx-core-default"))
+    testApi(group = "io.vertx", name = "vertx-web-client", version = vertxVersion)
+    testApi("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:$jacksonVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }

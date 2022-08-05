@@ -1,7 +1,7 @@
 package maintest.vertxtest
 
 
-import io.github.shinglem.easyvertx.web.core.Id
+import io.github.shinglem.easyvertx.web.core.dep.Id
 import io.github.shinglem.easyvertx.web.core.impl.Body
 import io.github.shinglem.easyvertx.web.core.impl.Route
 import io.github.shinglem.easyvertx.web.core.impl.RouteBase

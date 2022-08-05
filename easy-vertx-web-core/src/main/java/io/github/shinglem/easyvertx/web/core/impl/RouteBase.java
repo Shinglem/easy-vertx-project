@@ -17,7 +17,7 @@ public @interface RouteBase {
      *
      * @return the path prefix
      */
-    String path() default "";
+    String path() default "/";
 
     /**
      * The values are used for any route method declared on the class where {@link Route#produces()} is empty.

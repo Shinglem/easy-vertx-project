@@ -1,6 +1,6 @@
 plugins {
     java
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm")
     `maven-publish`
 }
 val projectVersion :String by project
