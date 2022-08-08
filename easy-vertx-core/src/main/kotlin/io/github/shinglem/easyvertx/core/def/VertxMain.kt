@@ -1,6 +1,7 @@
 package io.github.shinglem.easyvertx.core.def
 
 import io.github.shinglem.easyvertx.core.ConfigLoader
+import io.github.shinglem.easyvertx.core.Global
 import io.github.shinglem.easyvertx.core.Main
 import io.github.shinglem.easyvertx.core.VertxProducer
 import io.github.shinglem.easyvertx.core.json.path
@@ -11,45 +12,48 @@ import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.coroutines.await
 import kotlinx.coroutines.runBlocking
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 
-open class VertxMain(configLoaders: MutableList<ConfigLoader> = mutableListOf(InnerConfigLoader() , OuterConfigLoader()),
-                     val producer: VertxProducer = DefaultVertxProducer(configLoaders),
-)  : Main {
-    private final val logger = LoggerFactory.getLogger(this::class.java.name)
+private val logger = KotlinLogging.logger {}
+
+open class VertxMain(
+    configLoaders: MutableList<ConfigLoader> = mutableListOf(InnerConfigLoader(), OuterConfigLoader()),
+    val producer: VertxProducer = DefaultVertxProducer(configLoaders),
+) : Main {
 
 
-    private val verticleConfig = suspend { producer.config().await().path<JsonArray>("$.vertx.config.verticles") ?: JsonArray() }
+    private val verticleConfig = Global.config.path<JsonArray>("$.vertx.config.verticles") ?: JsonArray()
     val vertx = producer.vertx()
 
     override fun start() {
-        start {  }
+        start { }
     }
 
-    override fun start(successHandle : ()->Unit) {
+    override fun start(successHandle: () -> Unit) {
         runBlocking {
             try {
-                logger.debug("-----deploy verticles-----")
-                logger.debug("-----get verticleConfig-----")
-                val vConfig = verticleConfig()
-                logger.debug("-----get verticleConfig done ${vConfig.encodePrettily()}-----")
+                logger.debug{"-----deploy verticles-----"}
+                logger.debug{"-----get verticleConfig-----"}
+                val vConfig = verticleConfig
+                logger.debug{"-----get verticleConfig done -----"}
+                logger.debug{"verticle config : \n ${vConfig.encodePrettily()}"}
                 vConfig.forEach {
-                    logger.debug("current : $it")
+                    logger.debug{"current : $it"}
                     val config = it as JsonObject
                     val optionsJson = config.getJsonObject("deploymentOptions") ?: JsonObject()
                     val options = DeploymentOptions(optionsJson)
 
-                    logger.debug(
+                    logger.debug {
                 """|
                    |class : ${config.getString("class")}
                    |options ：
-                   |${optionsJson.encodePrettily().replace("\n" , "\n|")}
+                   |${optionsJson.encodePrettily().replace("\n", "\n|")}
                 """.trimMargin()
-                    )
+                    }
                     val serviceVerticleId = try {
                         vertx.deployVerticle(config.getString("class"), options).await()
                     } catch (e: Throwable) {
-                        logger.error("start verticle error : class: ${config.getString("class")}" , e)
+                        logger.error("start verticle error : class: ${config.getString("class")}", e)
                         throw e
                     }
 
@@ -58,7 +62,7 @@ open class VertxMain(configLoaders: MutableList<ConfigLoader> = mutableListOf(In
 
                 successHandle()
             } catch (e: Throwable) {
-                logger.error("" , e)
+                logger.error("", e)
             }
         }
 

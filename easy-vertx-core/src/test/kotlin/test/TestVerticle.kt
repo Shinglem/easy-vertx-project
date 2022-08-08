@@ -5,7 +5,6 @@ import io.github.shinglem.easyvertx.core.def.VertxMain
 import io.github.shinglem.easyvertx.core.json.path
 import io.vertx.core.Vertx
 import io.vertx.kotlin.coroutines.CoroutineVerticle
-import io.vertx.kotlin.coroutines.await
 import org.junit.jupiter.api.Test
 
 open class TestVerticle : CoroutineVerticle() {
@@ -18,8 +17,9 @@ open class TestVerticle : CoroutineVerticle() {
         println(Vertx.currentContext().isWorkerContext)
         println(Vertx.currentContext().instanceCount)
 
-        println(Global.config.await())
-        println(Global.config.await().path("$.vertx"))
+
+        println(Global.config)
+        println(Global.config.path("$.vertx"))
     }
 }
 

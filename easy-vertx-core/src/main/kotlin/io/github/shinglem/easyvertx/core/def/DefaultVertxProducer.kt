@@ -15,10 +15,11 @@ import io.vertx.core.json.JsonObject
 import io.vertx.core.spi.cluster.ClusterManager
 import io.vertx.kotlin.coroutines.await
 import kotlinx.coroutines.runBlocking
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.net.InetAddress
 import java.util.concurrent.CountDownLatch
 
+private val logger = KotlinLogging.logger {}
 
 open class DefaultVertxProducer(
     private val configLoaders: List<ConfigLoader>,
@@ -28,7 +29,6 @@ open class DefaultVertxProducer(
     private val preDo: MutableList<() -> Unit> = mutableListOf(::registerJsonMapper, ::initJsonPath),
     private val afterDo: MutableList<() -> Unit> = mutableListOf(),
 ) : VertxProducer {
-    private final val logger = LoggerFactory.getLogger(this::class.java.name)
 
     private val retriever: ConfigRetriever
 
@@ -39,11 +39,12 @@ open class DefaultVertxProducer(
             it.path<JsonObject>("$.vertx.vertxOptions") ?: JsonObject()
         }
     }
+
     init {
-        logger.debug("----- set config loader -----")
+        logger.debug { "----- set config loader -----" }
         val configVertx = Vertx.vertx()
         Runtime.getRuntime().addShutdownHook(Thread {
-            logger.info("stop config vertx");
+            logger.info("stop config vertx")
 
             val countDownLatch = CountDownLatch(1)
             configVertx.close {
@@ -64,11 +65,11 @@ open class DefaultVertxProducer(
         }
         val retriever = ConfigRetriever.create(configVertx, configRetrieverOptions)
         this.retriever = retriever
-        logger.debug("try load config ...")
+        logger.debug { "try load config ..." }
         runBlocking {
-            retriever.config.await()
+            Global.config = retriever.config.await()
         }
-
+        logger.debug { "load config success ... ${Global.config.encodePrettily()}" }
 
         this.vertx = vertxInit()
 
@@ -93,29 +94,27 @@ open class DefaultVertxProducer(
 
 
     private fun vertxInit(): Vertx {
-        logger.debug("----- init -----")
+        logger.debug { "----- init -----" }
 
         val vertx: Vertx
-        logger.debug("----- register json mapper -----")
+        logger.debug { "----- init preDo -----" }
         preDo.forEach(Function0<Unit>::invoke)
-        logger.debug("----- get local ip -----")
+        logger.info { "----- get local ip -----" }
         val ip = localIp()
-        logger.debug("----- ip => $ip -----")
+        logger.info { "----- ip => $ip -----" }
 
 
 
         runBlocking {
-            logger.debug("----- load config init -----")
-            logger.debug("config => ${config().await().encodePrettily()}")
             if (isCluster && clusterManager != null) {
 
-                logger.debug("----- start cluster vertx -----")
+                logger.debug { "----- start cluster vertx -----" }
                 vertx =
                     Vertx.clusteredVertx(VertxOptions(vertxOptions.await()).setClusterManager(clusterManager)).await()
 
             } else {
 
-                logger.debug("----- start single vertx -----")
+                logger.debug { "----- start single vertx -----" }
                 val opt = vertxOptions.await()
                 vertx = Vertx.vertx(VertxOptions(opt))
 

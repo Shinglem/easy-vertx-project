@@ -26,7 +26,6 @@ object Global {
     lateinit var vertx: Vertx
 
     @JvmStatic
-    lateinit var config: Future<JsonObject>
-
+    lateinit var config: JsonObject
 }
 

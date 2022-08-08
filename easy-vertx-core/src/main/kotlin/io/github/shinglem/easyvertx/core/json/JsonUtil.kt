@@ -2,21 +2,24 @@
 
 package io.github.shinglem.easyvertx.core.json
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.jayway.jsonpath.Configuration
 import com.jayway.jsonpath.JsonPath
 import com.jayway.jsonpath.Option
+import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider
 import com.jayway.jsonpath.spi.json.JsonProvider
+import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider
 import com.jayway.jsonpath.spi.mapper.MappingProvider
 import io.vertx.core.json.JsonObject
-import java.util.EnumSet
-import kotlin.reflect.KClass
+import io.vertx.core.json.jackson.DatabindCodec
+import java.util.*
 
 
 fun initJsonPath() {
     Configuration.setDefaults(object : Configuration.Defaults {
 
-        private val jsonProvider = VertxJsonProvider();
-        private val mappingProvider = VertxJsonMappingProvider();
+        private val jsonProvider = JacksonJsonNodeJsonProvider(DatabindCodec.mapper())
+        private val mappingProvider = JacksonMappingProvider(DatabindCodec.mapper())
         override fun jsonProvider(): JsonProvider {
             return jsonProvider
         }
@@ -32,21 +35,19 @@ fun initJsonPath() {
     })
 }
 
-fun <T : Any> JsonObject.path(path: String, clz: KClass<T>): T? {
+inline fun <reified T> JsonObject.path(path: String): T? {
     return try {
-        JsonPath.parse(this)
-            .read<T>(path)
+        val node = DatabindCodec.mapper().valueToTree<JsonNode>(this)
+        val ret = JsonPath.parse(node).read<JsonNode>(path)
+
+        DatabindCodec.mapper().let {
+            it.readValue(it.treeAsTokens(ret), T::class.java)
+        }
+
     } catch (e: Throwable) {
         null
     }
 }
 
-fun <T : Any> JsonObject.path(path: String, clz: Class<T>): T? {
-    return this.path(path, clz.kotlin)
-}
-
-inline fun <reified T : Any> JsonObject.path(path: String): T? {
-    return this.path(path, T::class)
-}
 
 
