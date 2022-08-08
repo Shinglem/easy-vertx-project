@@ -29,7 +29,7 @@ open class OuterConfigLoader : ConfigLoader {
     }
 
     override fun order(): Int {
-        return -Int.MAX_VALUE
+        return -Int.MAX_VALUE + 1
     }
 
 }

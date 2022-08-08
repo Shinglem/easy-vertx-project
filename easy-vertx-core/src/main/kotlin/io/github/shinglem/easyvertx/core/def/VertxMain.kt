@@ -19,7 +19,7 @@ open class VertxMain(configLoaders: MutableList<ConfigLoader> = mutableListOf(In
     private final val logger = LoggerFactory.getLogger(this::class.java.name)
 
 
-    private val verticleConfig = suspend { producer.config().await().path<JsonArray>("vertx.config.verticles") ?: JsonArray() }
+    private val verticleConfig = suspend { producer.config().await().path<JsonArray>("$.vertx.config.verticles") ?: JsonArray() }
     val vertx = producer.vertx()
 
     override fun start() {
@@ -30,20 +30,28 @@ open class VertxMain(configLoaders: MutableList<ConfigLoader> = mutableListOf(In
         runBlocking {
             try {
                 logger.debug("-----deploy verticles-----")
-                verticleConfig().forEach {
+                logger.debug("-----get verticleConfig-----")
+                val vConfig = verticleConfig()
+                logger.debug("-----get verticleConfig done ${vConfig.encodePrettily()}-----")
+                vConfig.forEach {
+                    logger.debug("current : $it")
                     val config = it as JsonObject
                     val optionsJson = config.getJsonObject("deploymentOptions") ?: JsonObject()
                     val options = DeploymentOptions(optionsJson)
 
                     logger.debug(
-                        """
-                    class : ${config.getString("class")}
-                    options ：
-                     ${optionsJson.encodePrettily()}
-                """.trimIndent()
+                """|
+                   |class : ${config.getString("class")}
+                   |options ：
+                   |${optionsJson.encodePrettily().replace("\n" , "\n|")}
+                """.trimMargin()
                     )
-
-                    val serviceVerticleId = vertx.deployVerticle(config.getString("class"), options).await()
+                    val serviceVerticleId = try {
+                        vertx.deployVerticle(config.getString("class"), options).await()
+                    } catch (e: Throwable) {
+                        logger.error("start verticle error : class: ${config.getString("class")}" , e)
+                        throw e
+                    }
 
                     logger.info("${config.getString("class")} Start: id = [$serviceVerticleId ]")
                 }

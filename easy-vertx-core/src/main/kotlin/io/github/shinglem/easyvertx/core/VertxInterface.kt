@@ -26,10 +26,7 @@ object Global {
     lateinit var vertx: Vertx
 
     @JvmStatic
-    val config: Future<JsonObject>
-        get() = configGetter()
+    lateinit var config: Future<JsonObject>
 
-    @JvmStatic
-    lateinit var configGetter: () -> Future<JsonObject>
 }
 

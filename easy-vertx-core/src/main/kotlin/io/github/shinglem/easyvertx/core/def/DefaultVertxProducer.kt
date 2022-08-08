@@ -3,6 +3,7 @@ package io.github.shinglem.easyvertx.core.def
 import io.github.shinglem.easyvertx.core.ConfigLoader
 import io.github.shinglem.easyvertx.core.Global
 import io.github.shinglem.easyvertx.core.VertxProducer
+import io.github.shinglem.easyvertx.core.json.initJsonPath
 import io.github.shinglem.easyvertx.core.json.path
 import io.github.shinglem.easyvertx.core.json.registerJsonMapper
 import io.vertx.config.ConfigRetriever
@@ -22,15 +23,17 @@ import java.util.concurrent.CountDownLatch
 
 open class DefaultVertxProducer(
     private val configLoaders: List<ConfigLoader>,
-    private val configScanPeriod: Long = 0,
+    private val configRetrieverOptions :ConfigRetrieverOptions = ConfigRetrieverOptions().setScanPeriod(-1),
     private val isCluster: Boolean = false,
     private val clusterManager: ClusterManager? = null,
-    private val preDo : MutableList<()->Unit> = mutableListOf(::registerJsonMapper),
+    private val preDo : MutableList<()->Unit> = mutableListOf(::registerJsonMapper , ::initJsonPath),
     private val afterDo : MutableList<()->Unit> = mutableListOf(),
 ) : VertxProducer {
     private final val logger = LoggerFactory.getLogger(this::class.java.name)
 
     private val retriever: ConfigRetriever
+
+    private val vertx: Vertx
 
     init {
         logger.debug("----- set config loader -----")
@@ -51,17 +54,26 @@ open class DefaultVertxProducer(
         })
 
         val sortedList = configLoaders.sortedByDescending { it.order() }
-        val options = ConfigRetrieverOptions()
-        if (configScanPeriod > 0) {
-            options.scanPeriod = configScanPeriod
-        }
 
         sortedList.forEach {
-            options.addStore(it.store())
+            configRetrieverOptions.addStore(it.store())
         }
-        val retriever = ConfigRetriever.create(configVertx, options)
+        val retriever = ConfigRetriever.create(configVertx, configRetrieverOptions)
         this.retriever = retriever
-        Global.configGetter = {retriever.config}
+        val countDownLatch = CountDownLatch(1)
+        logger.debug("try load config ...")
+        retriever.config.onComplete {
+            Global.config = retriever.config
+            countDownLatch.countDown()
+        }
+        try {
+            countDownLatch.await()
+            logger.info("load config success");
+        } catch (e: Throwable) {
+            logger.error("", e)
+        }
+
+        this.vertx = vertxInit()
 
     }
 
@@ -77,12 +89,8 @@ open class DefaultVertxProducer(
     }
 
 
-    private val vertx: Vertx by lazy {
-        vertxInit()
-    }
-
     private val vertxOptions = suspend {
-       val opt = config().await().path<JsonObject>("vertx.config.vertxOptions") ?: JsonObject()
+       val opt = config().await().path<JsonObject>("$.vertx.vertxOptions") ?: JsonObject()
        opt
     }
 
