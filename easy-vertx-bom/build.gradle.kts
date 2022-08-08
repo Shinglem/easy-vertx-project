@@ -1,6 +1,5 @@
 plugins {
-    id("java")
-    kotlin("jvm")
+    `java-platform`
 }
 
 group = "io.github.shinglem.esay-vertx-project"
@@ -15,56 +14,38 @@ val jacksonVersion: String by project
 val kotlinCoroutineVersion: String by project
 val kotlinLoggingVersion: String by project
 dependencies {
-
-    //jackson
-    api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    api("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
-    api("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion")
-    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
-
-
-    //vertx
-    api(group = "io.vertx", name = "vertx-core", version = vertxVersion)
-    api(group = "io.vertx", name = "vertx-lang-kotlin", version = vertxVersion)
-    api(group = "io.vertx", name = "vertx-lang-kotlin-coroutines", version = vertxVersion)
-    api(group = "io.vertx", name = "vertx-config", version = vertxVersion)
-    api(group = "io.vertx", name = "vertx-config-yaml", version = vertxVersion)
+    constraints {
+        //jackson
+        api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+        api("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+        api("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion")
+        api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
 
-    //log
-    api("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
+        //vertx
+        api(group = "io.vertx", name = "vertx-core", version = vertxVersion)
+        api(group = "io.vertx", name = "vertx-lang-kotlin", version = vertxVersion)
+        api(group = "io.vertx", name = "vertx-lang-kotlin-coroutines", version = vertxVersion)
+        api(group = "io.vertx", name = "vertx-config", version = vertxVersion)
+        api(group = "io.vertx", name = "vertx-config-yaml", version = vertxVersion)
 
-    //util
-    api("com.jayway.jsonpath:json-path:2.7.0")
 
-    //kotlin
-    api(kotlin("stdlib"))
-    api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = kotlinCoroutineVersion)
-    api(kotlin("reflect"))
+        //log
+        api("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-}
+        //util
+        api("com.jayway.jsonpath:json-path:2.7.0")
 
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
-}
+        //kotlin
+        api(kotlin("stdlib"))
+        api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = kotlinCoroutineVersion)
+        api(kotlin("reflect"))
 
-val jdkVersion :String by project
-tasks {
 
-    compileJava {
-        sourceCompatibility = jdkVersion
-    }
-    compileTestJava {
-        sourceCompatibility = jdkVersion
-    }
-    compileKotlin {
-        kotlinOptions.jvmTarget = jdkVersion
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = jdkVersion
     }
 
 }
 
+javaPlatform {
+    allowDependencies()
+}

@@ -189,6 +189,7 @@
     <logger name="sun.rmi" level="ERROR"/>
     <logger name="java.io.serialization" level="ERROR"></logger>
     <logger name="org.apache.zookeeper" level="INFO"></logger>
+    <logger name="ConfigurationProvider#io.vertx.config.impl.spi" level="ERROR"/>
     <root level="ALL">
         <appender-ref ref="AllLOGFILE"/>
         <appender-ref ref="MAIN"/>

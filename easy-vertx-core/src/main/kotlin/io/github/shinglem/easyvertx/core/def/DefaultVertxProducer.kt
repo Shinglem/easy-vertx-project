@@ -20,14 +20,13 @@ import java.net.InetAddress
 import java.util.concurrent.CountDownLatch
 
 
-
 open class DefaultVertxProducer(
     private val configLoaders: List<ConfigLoader>,
-    private val configRetrieverOptions :ConfigRetrieverOptions = ConfigRetrieverOptions().setScanPeriod(-1),
+    private val configRetrieverOptions: ConfigRetrieverOptions = ConfigRetrieverOptions().setScanPeriod(-1),
     private val isCluster: Boolean = false,
     private val clusterManager: ClusterManager? = null,
-    private val preDo : MutableList<()->Unit> = mutableListOf(::registerJsonMapper , ::initJsonPath),
-    private val afterDo : MutableList<()->Unit> = mutableListOf(),
+    private val preDo: MutableList<() -> Unit> = mutableListOf(::registerJsonMapper, ::initJsonPath),
+    private val afterDo: MutableList<() -> Unit> = mutableListOf(),
 ) : VertxProducer {
     private final val logger = LoggerFactory.getLogger(this::class.java.name)
 
@@ -35,6 +34,11 @@ open class DefaultVertxProducer(
 
     private val vertx: Vertx
 
+    private val vertxOptions by lazy {
+        config().map {
+            it.path<JsonObject>("$.vertx.vertxOptions") ?: JsonObject()
+        }
+    }
     init {
         logger.debug("----- set config loader -----")
         val configVertx = Vertx.vertx()
@@ -60,18 +64,11 @@ open class DefaultVertxProducer(
         }
         val retriever = ConfigRetriever.create(configVertx, configRetrieverOptions)
         this.retriever = retriever
-        val countDownLatch = CountDownLatch(1)
         logger.debug("try load config ...")
-        retriever.config.onComplete {
-            Global.config = retriever.config
-            countDownLatch.countDown()
+        runBlocking {
+            retriever.config.await()
         }
-        try {
-            countDownLatch.await()
-            logger.info("load config success");
-        } catch (e: Throwable) {
-            logger.error("", e)
-        }
+
 
         this.vertx = vertxInit()
 
@@ -80,18 +77,12 @@ open class DefaultVertxProducer(
     override fun config(): Future<JsonObject> {
         return retriever.config
             .onFailure {
-                logger.error("load config error : " , it)
+                logger.error("load config error : ", it)
             }
     }
 
     override fun retriever(): ConfigRetriever {
         return retriever
-    }
-
-
-    private val vertxOptions = suspend {
-       val opt = config().await().path<JsonObject>("$.vertx.vertxOptions") ?: JsonObject()
-       opt
     }
 
 
@@ -119,17 +110,19 @@ open class DefaultVertxProducer(
             if (isCluster && clusterManager != null) {
 
                 logger.debug("----- start cluster vertx -----")
-                vertx = Vertx.clusteredVertx(VertxOptions(vertxOptions()).setClusterManager(clusterManager)).await()
+                vertx =
+                    Vertx.clusteredVertx(VertxOptions(vertxOptions.await()).setClusterManager(clusterManager)).await()
 
             } else {
 
                 logger.debug("----- start single vertx -----")
-                vertx = Vertx.vertx(VertxOptions(vertxOptions()))
+                val opt = vertxOptions.await()
+                vertx = Vertx.vertx(VertxOptions(opt))
 
             }
         }
 
-        afterDo.forEach (Function0<Unit>::invoke)
+        afterDo.forEach(Function0<Unit>::invoke)
         Runtime.getRuntime().addShutdownHook(Thread {
             logger.info("stop vertx");
 
