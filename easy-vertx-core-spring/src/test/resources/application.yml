@@ -16,4 +16,7 @@ vertx:
       -
         class: maintest.vertxtest.MySpringVerticle
         deploymentOptions:
-           instances: 1
+          instances: 2
+
+aaa:
+  bbb: asf

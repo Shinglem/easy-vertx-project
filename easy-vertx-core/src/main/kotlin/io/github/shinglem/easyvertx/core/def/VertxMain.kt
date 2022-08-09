@@ -32,23 +32,23 @@ open class VertxMain(
     override fun start(successHandle: () -> Unit) {
         runBlocking {
             try {
-                logger.debug{"-----deploy verticles-----"}
-                logger.debug{"-----get verticleConfig-----"}
+                logger.debug { "-----deploy verticles-----" }
+                logger.debug { "-----get verticleConfig-----" }
                 val vConfig = verticleConfig
-                logger.debug{"-----get verticleConfig done -----"}
-                logger.debug{"verticle config : \n ${vConfig.encodePrettily()}"}
+                logger.debug { "-----get verticleConfig done -----" }
+                logger.debug { "verticle config : \n ${vConfig.encodePrettily()}" }
                 vConfig.forEach {
-                    logger.debug{"current : $it"}
+                    logger.debug { "current : $it" }
                     val config = it as JsonObject
                     val optionsJson = config.getJsonObject("deploymentOptions") ?: JsonObject()
-                    val options = DeploymentOptions(optionsJson)
+                    val options = optionsJson.mapTo(DeploymentOptions::class.java)
 
                     logger.debug {
-                """|
-                   |class : ${config.getString("class")}
-                   |options ：
-                   |${optionsJson.encodePrettily().replace("\n", "\n|")}
-                """.trimMargin()
+                        """|
+                           |class : ${config.getString("class")}
+                           |options ：
+                           |${optionsJson.encodePrettily().replace("\n", "\n|")}
+                           |""".trimMargin()
                     }
                     val serviceVerticleId = try {
                         vertx.deployVerticle(config.getString("class"), options).await()

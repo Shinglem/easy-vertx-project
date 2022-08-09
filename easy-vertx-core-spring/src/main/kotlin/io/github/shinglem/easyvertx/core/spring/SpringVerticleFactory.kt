@@ -9,7 +9,7 @@ import java.util.*
 import java.util.concurrent.Callable
 
 
-class SpringVerticleFactory : VerticleFactory {
+open class SpringVerticleFactory : VerticleFactory {
     /* (non-Javadoc)
      * @see io.vertx.core.spi.VerticleFactory#prefix()
      */
@@ -22,22 +22,20 @@ class SpringVerticleFactory : VerticleFactory {
         classLoader: ClassLoader,
         promise: Promise<Callable<Verticle>>
     ) {
-        val v = createVerticle(verticleName, classLoader)
         promise.complete(Callable {
-            v
+            createVerticle(verticleName, classLoader)
         })
     }
 
 
     @Throws(Exception::class)
     fun createVerticle(verticleName: String, classLoader: ClassLoader): Verticle {
-        var verticleName = verticleName
         Objects.requireNonNull(verticleName, "Verticle Name is required")
-        verticleName = VerticleFactory.removePrefix(verticleName)
+        val name = VerticleFactory.removePrefix(verticleName)
         Objects.requireNonNull(verticleName, "Verticle Name must be more than just the prefix")
         val ctx = applicationContext
 
-        val clz = Class.forName(verticleName)
+        val clz = Class.forName(name)
 
         return ctx.getBean(clz) as Verticle
     }

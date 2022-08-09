@@ -1,2 +1,2 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=io.github.shinglem.easyvertx.core.spring.VertxBean
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=io.github.shinglem.easyvertx.core.spring.VertxBean,io.github.shinglem.easyvertx.core.spring.VertxMainBean
   # ,io.github.shinglem.easyvertx.core.spring.EnvironmentHelper

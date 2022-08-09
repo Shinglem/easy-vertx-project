@@ -13,6 +13,7 @@ val vertxVersion: String by project
 val jacksonVersion: String by project
 val kotlinCoroutineVersion: String by project
 val kotlinLoggingVersion: String by project
+val springBootVersion : String by project
 dependencies {
     constraints {
         //jackson
@@ -20,7 +21,7 @@ dependencies {
         api("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
         api("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion")
         api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
-
+        api("com.fasterxml.jackson.dataformat:jackson-dataformat-properties:$jacksonVersion")
 
         //vertx
         api(group = "io.vertx", name = "vertx-core", version = vertxVersion)
@@ -35,6 +36,9 @@ dependencies {
 
         //util
         api("com.jayway.jsonpath:json-path:2.7.0")
+
+        //spring
+        api("org.springframework.boot:spring-boot-starter:$springBootVersion")
 
         //kotlin
         api(kotlin("stdlib"))
