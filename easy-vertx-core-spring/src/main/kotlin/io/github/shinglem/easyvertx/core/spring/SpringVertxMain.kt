@@ -7,6 +7,7 @@ import io.github.shinglem.easyvertx.core.VertxProducer
 import io.github.shinglem.easyvertx.core.def.DefaultVertxProducer
 import io.github.shinglem.easyvertx.core.def.InnerConfigLoader
 import io.github.shinglem.easyvertx.core.def.OuterConfigLoader
+import io.github.shinglem.easyvertx.core.def.VertxMain
 import io.github.shinglem.easyvertx.core.json.path
 import io.vertx.core.DeploymentOptions
 import io.vertx.core.Future
@@ -25,65 +26,14 @@ private val logger = KotlinLogging.logger {}
 open class SpringVertxMain(
     val applicationContext: ApplicationContext,
     configLoaders: MutableList<ConfigLoader> = mutableListOf(SpringVertxConfigLoader(applicationContext)),
-    val producer: VertxProducer = DefaultVertxProducer(configLoaders),
-) : Main {
+    producer: VertxProducer = DefaultVertxProducer(configLoaders),
+) : VertxMain(configLoaders, producer) {
 
-    private val verticleConfig = Global.config.path<JsonArray>("$.vertx.config.verticles") ?: JsonArray()
-    val vertx = producer.vertx()
     private val prefix = SpringVerticleFactory.PREFIX
-    override fun start() {
-        start { }
+    override open protected val verticleClassName: (JsonObject) -> String = {
+        val clz = it.getString("class")
+        val name = "$prefix:$clz"
+        name
     }
-
-    override fun start(successHandle: () -> Unit) {
-        runBlocking {
-            try {
-                logger.debug { "-----deploy verticles-----" }
-                logger.debug { "-----get verticleConfig-----" }
-                val vConfig = verticleConfig
-                logger.debug { "-----get verticleConfig done -----" }
-                logger.debug { "verticle config : \n ${vConfig.encodePrettily()}" }
-                vConfig.forEach {
-                    logger.debug { "current : $it" }
-                    val config = it as JsonObject
-                    val optionsJson = config.getJsonObject("deploymentOptions") ?: JsonObject()
-                    val options = optionsJson.mapTo(DeploymentOptions::class.java)
-
-                    logger.debug {
-                        """|
-                           |class : ${config.getString("class")}
-                           |options ：
-                           |${optionsJson.encodePrettily().replace("\n", "\n|")}
-                           |""".trimMargin()
-                    }
-                    val name = prefix + ":" + config.getString("class")
-                    val serviceVerticleId = try {
-
-                        vertx.deployVerticle(name, options).await()
-                    } catch (e: Throwable) {
-                        logger.error("start verticle error : class: ${name}", e)
-                        throw e
-                    }
-
-                    logger.info("${name} Start: id = [$serviceVerticleId ]")
-                }
-
-                successHandle()
-            } catch (e: Throwable) {
-                logger.error("", e)
-            }
-        }
-
-
-    }
-
-    override fun vertx(): Vertx {
-        return vertx
-    }
-
-    override fun config(): Future<JsonObject> {
-        return producer.config()
-    }
-
 
 }

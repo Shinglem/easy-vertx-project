@@ -22,9 +22,9 @@ open class VertxMain(
 ) : Main {
 
 
-    private val verticleConfig = Global.config.path<JsonArray>("$.vertx.config.verticles") ?: JsonArray()
+    protected val verticleConfig = Global.config.path<JsonArray>("$.vertx.config.verticles") ?: JsonArray()
     val vertx = producer.vertx()
-
+    protected open val verticleClassName: (JsonObject)->String = { it.getString("class") }
     override fun start() {
         start { }
     }
@@ -42,18 +42,18 @@ open class VertxMain(
                     val config = it as JsonObject
                     val optionsJson = config.getJsonObject("deploymentOptions") ?: JsonObject()
                     val options = optionsJson.mapTo(DeploymentOptions::class.java)
-
+                    val name = verticleClassName(config)
                     logger.debug {
                         """|
-                           |class : ${config.getString("class")}
+                           |class : $name
                            |options ：
                            |${optionsJson.encodePrettily().replace("\n", "\n|")}
                            |""".trimMargin()
                     }
                     val serviceVerticleId = try {
-                        vertx.deployVerticle(config.getString("class"), options).await()
+                        vertx.deployVerticle(name, options).await()
                     } catch (e: Throwable) {
-                        logger.error("start verticle error : class: ${config.getString("class")}", e)
+                        logger.error("start verticle error : class: $name", e)
                         throw e
                     }
 
