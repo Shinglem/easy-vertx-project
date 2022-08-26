@@ -39,11 +39,12 @@ dependencies {
     //kotlin
     api(kotlin("stdlib"))
     api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core")
+    api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-jdk8")
     api(kotlin("reflect"))
 
 
 
-    testApi("ch.qos.logback", "logback-classic", "1.2.5")
+    testApi("ch.qos.logback", "logback-classic", "1.2.11")
     testApi("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testApi("org.junit.jupiter:junit-jupiter-engine")
 }

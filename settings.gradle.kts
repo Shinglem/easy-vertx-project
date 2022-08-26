@@ -32,8 +32,7 @@ pluginManagement {
 rootProject.name = "easy-vertx-project"
 include("easy-vertx-core")
 include("easy-vertx-core-spring")
-//include("easy-vertx-core-default")
-include("easy-vertx-web-core")
+include("easy-vertx-web")
 include("easy-vertx-web-spring")
 include("easy-vertx-util")
 include("easy-vertx-bom")

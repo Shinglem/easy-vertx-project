@@ -50,4 +50,6 @@ inline fun <reified T> JsonObject.path(path: String): T? {
 }
 
 
-
+fun JsonObject.lightCopy() : JsonObject{
+    return this.copy { it }
+}

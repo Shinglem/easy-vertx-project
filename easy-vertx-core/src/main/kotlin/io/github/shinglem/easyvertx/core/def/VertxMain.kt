@@ -17,7 +17,7 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger {}
 
 open class VertxMain(
-    configLoaders: MutableList<ConfigLoader> = mutableListOf(InnerConfigLoader(), OuterConfigLoader()),
+    configLoaders: MutableList<ConfigLoader> = mutableListOf(InnerProfileConfigLoader(), OuterProfileConfigLoader()),
     val producer: VertxProducer = DefaultVertxProducer(configLoaders),
 ) : Main {
 

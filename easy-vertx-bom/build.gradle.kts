@@ -29,7 +29,7 @@ dependencies {
         api(group = "io.vertx", name = "vertx-lang-kotlin-coroutines", version = vertxVersion)
         api(group = "io.vertx", name = "vertx-config", version = vertxVersion)
         api(group = "io.vertx", name = "vertx-config-yaml", version = vertxVersion)
-
+        api(group = "io.vertx", name = "vertx-web" , version = vertxVersion)
 
         //log
         api("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
@@ -43,6 +43,7 @@ dependencies {
         //kotlin
         api(kotlin("stdlib"))
         api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = kotlinCoroutineVersion)
+        api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-jdk8", version = kotlinCoroutineVersion)
         api(kotlin("reflect"))
 
 

@@ -1,8 +1,12 @@
 package io.github.shinglem.easyvertx.web.spring
 
-import io.github.shinglem.easyvertx.web.core.dep.impl.WebAbstractVerticle
+import io.github.shinglem.easyvertx.core.Global
+import io.github.shinglem.easyvertx.core.json.path
+import io.github.shinglem.easyvertx.web.WebServerVerticle
+import io.github.shinglem.easyvertx.web.core.impl.RouteBase
 import io.vertx.core.http.HttpServerOptions
-import org.slf4j.LoggerFactory
+import io.vertx.core.json.JsonObject
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.config.ConfigurableBeanFactory
 import org.springframework.beans.factory.getBeansWithAnnotation
@@ -10,23 +14,26 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
-
+private val logger = KotlinLogging.logger {}
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 open class SpringWebVerticle(
     @Autowired
     private val applicationContext : ApplicationContext,
-    @Autowired
-    private val options : HttpServerOptions
-) : WebAbstractVerticle() {
+) : WebServerVerticle() {
 
-    private final val logger = LoggerFactory.getLogger(this::class.java.name)
+    open val webConfig by lazy {
+        Global.config.path<JsonObject>("$.webServer") ?: JsonObject()
+    }
+    open override val httpServerOptions by lazy {
+        webConfig.path<JsonObject>("httpServerOptions")?.mapTo(HttpServerOptions::class.java)
+            ?: HttpServerOptions()
+    }
 
-    override val httpServerOptions: HttpServerOptions = options
 
-    override fun loadControllers() {
-        val controllers = applicationContext.getBeansWithAnnotation<SpringRoute>().values.toTypedArray()
-        registerController(*controllers)
+    override fun findControllers() : List<Any> {
+        val controllers = applicationContext.getBeansWithAnnotation<RouteBase>().values.toList()
+        return controllers
     }
 
 

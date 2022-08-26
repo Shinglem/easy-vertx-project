@@ -1,6 +1,8 @@
 package io.github.shinglem.easyvertx.core.spring
 
+import io.github.shinglem.easyvertx.core.Global
 import io.github.shinglem.easyvertx.core.Main
+import io.vertx.core.Vertx
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
@@ -25,6 +27,11 @@ open class VertxBean {
         logger.debug { "post construct init vertx" }
         ApplicationContextProvider.applicationContext = applicationContext
         vertxMain.start()
+    }
+
+    @Bean
+    open fun vertx(): Vertx {
+        return Global.vertx
     }
 }
 
