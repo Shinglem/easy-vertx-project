@@ -9,7 +9,7 @@ version = projectVersion
 allprojects {
     repositories {
         mavenLocal()
-        maven("https://maven.aliyun.com/nexus/content/groups/public/")
+//        maven("https://maven.aliyun.com/nexus/content/groups/public/")
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://dl.bintray.com/kotlin/exposed")
