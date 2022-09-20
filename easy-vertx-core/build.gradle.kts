@@ -1,6 +1,7 @@
 plugins {
     java
     kotlin("jvm")
+    `maven-publish`
 }
 
 group = "io.github.shinglem.esay-vertx-project"
@@ -71,3 +72,14 @@ tasks {
 
 }
 
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "io.github.shinglem.easy-vertx-project"
+            artifactId = "easy-vertx-core"
+
+
+            from(components["java"])
+        }
+    }
+}
