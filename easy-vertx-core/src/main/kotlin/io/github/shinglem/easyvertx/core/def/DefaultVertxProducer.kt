@@ -26,6 +26,7 @@ open class DefaultVertxProducer(
     private val configRetrieverOptions: ConfigRetrieverOptions = ConfigRetrieverOptions().setScanPeriod(-1),
     private val isCluster: Boolean = false,
     private val clusterManager: ClusterManager? = null,
+    private val vertxOptionsApply:(VertxOptions)->VertxOptions = {it},
     private val preDo: MutableList<() -> Unit> = mutableListOf(::registerJsonMapper, ::initJsonPath),
     private val afterDo: MutableList<() -> Unit> = mutableListOf(),
 ) : VertxProducer {
@@ -109,14 +110,15 @@ open class DefaultVertxProducer(
             if (isCluster && clusterManager != null) {
 
                 logger.debug { "----- start cluster vertx -----" }
+                val options = vertxOptionsApply(VertxOptions(vertxOptions.await()).setClusterManager(clusterManager))
                 vertx =
-                    Vertx.clusteredVertx(VertxOptions(vertxOptions.await()).setClusterManager(clusterManager)).await()
+                    Vertx.clusteredVertx(options).await()
 
             } else {
 
                 logger.debug { "----- start single vertx -----" }
-                val opt = vertxOptions.await()
-                vertx = Vertx.vertx(VertxOptions(opt))
+                val opt = vertxOptionsApply(VertxOptions(vertxOptions.await()))
+                vertx = Vertx.vertx(opt)
 
             }
         }
