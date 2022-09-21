@@ -1,5 +1,6 @@
 plugins {
     `java-platform`
+    `maven-publish`
 }
 
 group = "io.github.shinglem.esay-vertx-project"
@@ -53,4 +54,15 @@ dependencies {
 
 javaPlatform {
     allowDependencies()
+}
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "io.github.shinglem.easy-vertx-project"
+            artifactId = "easy-vertx-bom"
+
+
+            from(components["javaPlatform"])
+        }
+    }
 }

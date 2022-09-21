@@ -65,11 +65,10 @@ open class SpringConfigStore(vertx: Vertx, config: JsonObject) : ConfigStore {
         }
     }
 
-
+    @Suppress("UNCHECKED_CAST")
     private fun getConfigJson(ctx: ApplicationContext): JsonObject {
         val c = ctx.environment as AbstractEnvironment
         val properties = Properties()
-        val tempMap = mutableMapOf<String, Any?>()
         c.propertySources
             .filterIsInstance<MapPropertySource>()
             .forEach { source ->

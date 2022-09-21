@@ -45,7 +45,7 @@ open class SpringVerticleFactory : VerticleFactory {
      * @return The application context
      */
     private val applicationContext: ApplicationContext
-        private get() = ApplicationContextProvider.applicationContext
+        get() = ApplicationContextProvider.applicationContext
             ?: throw IllegalStateException(
                 "No Application Context Instance has been "
                         + "set in ApplicationContextProvider."
