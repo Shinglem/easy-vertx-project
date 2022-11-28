@@ -1,17 +1,15 @@
 package io.github.shinglem.easyvertx.web.handler
 
-import io.github.shinglem.easyvertx.web.ReturnHandler
+import io.github.shinglem.easyvertx.core.util.ReturnHandler
 import io.github.shinglem.easyvertx.web.core.impl.DefaultReturn
 import io.github.shinglem.easyvertx.web.core.impl.Route
 import io.github.shinglem.easyvertx.web.core.impl.Route.HandlerType.*
 import io.vertx.core.Future
-import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.RoutingContext
 import io.vertx.kotlin.coroutines.await
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
 
@@ -29,14 +27,20 @@ open class DefaultReturnHandler : ReturnHandler {
         val scope = metadata.get("scope") as CoroutineScope
         val resultExecutor = metadata.get("resultExecutor") as (RoutingContext) -> Future<Any?>
         val handler: suspend (RoutingContext) -> Unit = { rc: RoutingContext ->
-            val rawResult = resultExecutor(rc).await()
-            val result = when (rawResult) {
-                is Unit, is Void -> ""
-                else -> rawResult.toString()
-            }
+            try {
 
-            if (!rc.response().ended()) {
-                rc.end(result)
+
+                val rawResult = resultExecutor(rc).await()
+                val result = when (rawResult) {
+                    is Unit, is Void -> ""
+                    else -> rawResult.toString()
+                }
+
+                if (!rc.response().ended()) {
+                    rc.end(result)
+                }
+            } catch (e: Throwable) {
+                rc.fail(500 , e)
             }
         }
 

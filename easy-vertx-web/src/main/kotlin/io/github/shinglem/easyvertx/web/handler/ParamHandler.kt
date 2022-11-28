@@ -1,6 +1,6 @@
 package io.github.shinglem.easyvertx.web.handler
 
-import io.github.shinglem.easyvertx.web.PreParamHandler
+import io.github.shinglem.easyvertx.core.util.FunctionParameterHandler
 import io.github.shinglem.easyvertx.web.core.impl.*
 import io.github.shinglem.easyvertx.web.core.util.id.SnowFlake
 import io.vertx.core.json.JsonArray
@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.isSubclassOf
 
-open class QueryParamHandler : PreParamHandler {
+open class QueryParamHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -52,7 +52,7 @@ open class QueryParamHandler : PreParamHandler {
 
 }
 
-open class PathParamHandler : PreParamHandler {
+open class PathParamHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -94,7 +94,7 @@ open class PathParamHandler : PreParamHandler {
 }
 
 
-open class FormParamHandler : PreParamHandler {
+open class FormParamHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -136,7 +136,7 @@ open class FormParamHandler : PreParamHandler {
 }
 
 
-open class BodyParamHandler : PreParamHandler {
+open class BodyParamHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -177,7 +177,7 @@ open class BodyParamHandler : PreParamHandler {
 
 }
 
-open class BodyHandler : PreParamHandler {
+open class BodyHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -235,7 +235,7 @@ open class BodyHandler : PreParamHandler {
 }
 
 
-open class FormHandler : PreParamHandler {
+open class FormHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -281,7 +281,7 @@ open class FormHandler : PreParamHandler {
 }
 
 
-open class ParamHandler : PreParamHandler {
+open class ParamHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -323,7 +323,7 @@ open class ParamHandler : PreParamHandler {
 }
 
 
-open class ParamsHandler : PreParamHandler {
+open class ParamsHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -369,7 +369,7 @@ open class ParamsHandler : PreParamHandler {
 }
 
 
-open class HeadersHandler : PreParamHandler {
+open class HeadersHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -414,7 +414,7 @@ open class HeadersHandler : PreParamHandler {
 
 }
 
-open class HeaderHandler : PreParamHandler {
+open class HeaderHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -456,7 +456,7 @@ open class HeaderHandler : PreParamHandler {
 }
 
 
-open class RouteContextHandler : PreParamHandler {
+open class RouteContextHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -501,7 +501,7 @@ open class RouteContextHandler : PreParamHandler {
 
 }
 
-open class HttpRequestHandler : PreParamHandler {
+open class HttpRequestHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -546,7 +546,7 @@ open class HttpRequestHandler : PreParamHandler {
 
 }
 
-open class HttpResponseHandler : PreParamHandler {
+open class HttpResponseHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic
@@ -592,7 +592,7 @@ open class HttpResponseHandler : PreParamHandler {
 }
 
 
-open class IdHandler : PreParamHandler {
+open class IdHandler : FunctionParameterHandler {
 
     companion object {
         @JvmStatic

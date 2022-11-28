@@ -38,8 +38,8 @@ dependencies {
         //util
         api("com.jayway.jsonpath:json-path:2.7.0")
 
-        //spring
-        api("org.springframework.boot:spring-boot-starter:$springBootVersion")
+//        //spring
+//        api("org.springframework.boot","spring-boot-starter", springBootVersion)
 
         //kotlin
         api(kotlin("stdlib"))

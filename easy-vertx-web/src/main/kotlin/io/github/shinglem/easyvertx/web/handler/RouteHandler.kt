@@ -1,8 +1,8 @@
 package io.github.shinglem.easyvertx.web.handler
 
 
-import io.github.shinglem.easyvertx.web.PreClassHandler
-import io.github.shinglem.easyvertx.web.PreFunctionHandler
+import io.github.shinglem.easyvertx.core.util.ClassHandler
+import io.github.shinglem.easyvertx.core.util.FunctionHandler
 import io.github.shinglem.easyvertx.web.core.impl.Route
 import io.github.shinglem.easyvertx.web.core.impl.Route.Routes
 import io.github.shinglem.easyvertx.web.core.impl.RouteBase
@@ -10,7 +10,7 @@ import io.vertx.core.http.HttpMethod
 import io.vertx.ext.web.Router
 import kotlin.reflect.KClass
 
-open class RouteBaseHandler : PreClassHandler {
+open class RouteBaseHandler : ClassHandler {
 
     companion object {
         @JvmStatic
@@ -31,7 +31,7 @@ open class RouteBaseHandler : PreClassHandler {
 
 }
 
-open class RouteHandler : PreFunctionHandler {
+open class RouteHandler : FunctionHandler {
 
     companion object {
         @JvmStatic

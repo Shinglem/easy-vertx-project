@@ -19,7 +19,8 @@ dependencies {
     //vertx
     api(group = "io.vertx", name = "vertx-web")
     api("com.google.guava:guava:31.1-jre")
-    testApi("ch.qos.logback", "logback-classic", "1.2.11")
+    
+    testApi("ch.qos.logback", "logback-classic", "1.4.5").exclude("org.slf4j" , "slf4j-api")
 //    testApi(project(":easy-vertx-core-default"))
     testApi(group = "io.vertx", name = "vertx-web-client", version = vertxVersion)
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")

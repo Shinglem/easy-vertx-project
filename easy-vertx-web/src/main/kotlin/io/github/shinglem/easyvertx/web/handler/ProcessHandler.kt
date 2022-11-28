@@ -1,9 +1,8 @@
 package io.github.shinglem.easyvertx.web.handler
 
-import io.github.shinglem.easyvertx.web.DoFunctionHandler
+import io.github.shinglem.easyvertx.core.util.DoFunctionHandler
 import io.github.shinglem.easyvertx.web.core.impl.DefaultDoFunction
 import io.vertx.core.Future
-import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.RoutingContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async

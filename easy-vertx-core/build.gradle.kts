@@ -32,10 +32,10 @@ dependencies {
 
 
     //log
-    api("io.github.microutils:kotlin-logging-jvm")
+    api("io.github.microutils","kotlin-logging-jvm")
 
     //util
-    api("com.jayway.jsonpath:json-path:2.7.0")
+    api("com.jayway.jsonpath" , "json-path" , "2.7.0").exclude("org.slf4j" , "slf4j-api")
 
     //kotlin
     api(kotlin("stdlib"))
@@ -45,7 +45,7 @@ dependencies {
 
 
 
-    testApi("ch.qos.logback", "logback-classic", "1.2.11")
+    testApi("ch.qos.logback", "logback-classic", "1.4.5").exclude("org.slf4j" , "slf4j-api")
     testApi("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testApi("org.junit.jupiter:junit-jupiter-engine")
 }

@@ -2,11 +2,11 @@ package io.github.shinglem.easyvertx.web
 
 import com.google.common.reflect.ClassPath
 import io.github.shinglem.easyvertx.web.core.impl.RouteBase
+import io.github.shinglem.easyvertx.web.util.resolveBuild
 import io.vertx.core.Context
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpServerOptions
 import io.vertx.ext.web.Router
-import io.vertx.kotlin.core.json.jsonObjectOf
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import mu.KotlinLogging
 import kotlin.reflect.full.createInstance
@@ -17,9 +17,9 @@ private val logger = KotlinLogging.logger {}
 abstract class WebServerVerticle : CoroutineVerticle() {
 
     abstract val httpServerOptions: HttpServerOptions
-    protected lateinit var rootRouter: Router
+    open protected lateinit var rootRouter: Router
 
-    protected val resolver = resolveBuild()
+    open protected val resolver = resolveBuild()
 
     override fun init(vertx: Vertx, context: Context) {
         super.init(vertx, context)

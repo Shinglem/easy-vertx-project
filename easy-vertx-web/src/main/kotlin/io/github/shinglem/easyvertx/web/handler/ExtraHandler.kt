@@ -1,9 +1,8 @@
 package io.github.shinglem.easyvertx.web.handler
 
 
-import io.github.shinglem.easyvertx.web.PreFunctionHandler
+import io.github.shinglem.easyvertx.core.util.FunctionHandler
 import io.github.shinglem.easyvertx.web.core.impl.RawRouter
-import io.github.shinglem.easyvertx.web.core.impl.Route
 import io.vertx.ext.web.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.asCompletableFuture
@@ -15,7 +14,7 @@ import kotlin.reflect.full.callSuspendBy
 import kotlin.reflect.full.isSubclassOf
 
 
-open class RawRouterHandler : PreFunctionHandler {
+open class RawRouterHandler : FunctionHandler {
 
     companion object {
         @JvmStatic
@@ -62,6 +61,7 @@ open class RawRouterHandler : PreFunctionHandler {
             function.callBy(parameterMap)
         }
 
+        metadata.put("isDone" , true)
 
     }
 
