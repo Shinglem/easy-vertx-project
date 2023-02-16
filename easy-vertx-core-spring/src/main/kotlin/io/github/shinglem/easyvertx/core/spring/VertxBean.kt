@@ -3,12 +3,13 @@ package io.github.shinglem.easyvertx.core.spring
 import io.github.shinglem.easyvertx.core.Global
 import io.github.shinglem.easyvertx.core.Main
 import io.vertx.core.Vertx
+import jakarta.annotation.PostConstruct
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import javax.annotation.PostConstruct
+
 
 private val logger = KotlinLogging.logger {}
 

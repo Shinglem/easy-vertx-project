@@ -2,12 +2,13 @@ package maintest.vertxtest
 
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Vertx
+import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.beans.factory.config.ConfigurableBeanFactory
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-import javax.annotation.PostConstruct
+
 
 
 @Component
