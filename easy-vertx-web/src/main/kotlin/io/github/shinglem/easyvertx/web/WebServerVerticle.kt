@@ -78,6 +78,7 @@ abstract class WebServerVerticle : CoroutineVerticle() {
     open fun registerDefaultHandler() {
         rootRouter.route().order(Int.MIN_VALUE).handler {
             it.response().setChunked(true)
+            it.next()
         }
         rootRouter.route().order(Int.MIN_VALUE).handler(LoggerHandler.create())
         rootRouter.route().order(Int.MIN_VALUE).handler(BodyHandler.create(true))
