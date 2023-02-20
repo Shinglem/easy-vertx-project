@@ -1,7 +1,7 @@
 package io.github.shinglem.easyvertx.web.spring
 
 import io.github.shinglem.easyvertx.core.Global
-import io.github.shinglem.easyvertx.core.json.path
+import io.github.shinglem.easyvertx.core.json.path0
 import io.github.shinglem.easyvertx.web.WebServerVerticle
 import io.github.shinglem.easyvertx.web.core.impl.RouteBase
 import io.vertx.core.http.HttpServerOptions
@@ -23,10 +23,10 @@ open class SpringWebVerticle(
 ) : WebServerVerticle() {
 
     open val webConfig by lazy {
-        Global.config.path<JsonObject>("$.webServer") ?: JsonObject()
+        Global.config.path0<JsonObject>("$.webServer") ?: JsonObject()
     }
     open override val httpServerOptions by lazy {
-        webConfig.path<JsonObject>("httpServerOptions")?.mapTo(HttpServerOptions::class.java)
+        webConfig.path0<JsonObject>("httpServerOptions")?.mapTo(HttpServerOptions::class.java)
             ?: HttpServerOptions()
     }
 

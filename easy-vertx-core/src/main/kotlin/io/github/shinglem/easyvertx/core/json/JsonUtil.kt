@@ -2,10 +2,10 @@
 
 package io.github.shinglem.easyvertx.core.json
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.TextNode
 import com.fasterxml.jackson.databind.node.ValueNode
+import com.fasterxml.jackson.module.kotlin.convertValue
 import com.jayway.jsonpath.Configuration
 import com.jayway.jsonpath.JsonPath
 import com.jayway.jsonpath.JsonPathException
@@ -196,45 +196,50 @@ open class VertxJsonProvider() : AbstractJsonProvider() {
 val jsonPathConfig = Configuration.ConfigurationBuilder().jsonProvider(VertxJsonProvider())
     .mappingProvider(JacksonMappingProvider(DatabindCodec.mapper())).build()
 
-inline fun <reified T> JsonObject.path(path: String): T? {
-    return JsonPath
+
+inline fun <reified T> path0(obj: Any, path: String): T? {
+    val value = JsonPath
         .using(jsonPathConfig)
-        .parse(this)
-        .read<T>(path)
+        .parse(obj)
+        .read<Any?>(path)
+
+    if (value is T?) {
+        return value
+    } else {
+        return DatabindCodec.mapper().convertValue<T>(value)
+    }
+}
+
+fun <T> path0(obj: Any, path: String, clz: Class<T>): T? {
+    val value = JsonPath
+        .using(jsonPathConfig)
+        .parse(obj)
+        .read<Any?>(path)
+
+    return DatabindCodec.mapper().convertValue(value, clz)
+
+}
+
+inline fun <reified T> JsonObject.path(path: String): T? {
+    return path0(this, path)
 }
 
 inline fun <reified T> JsonArray.path(path: String): T? {
-    return JsonPath
-        .using(jsonPathConfig)
-        .parse(this)
-        .read<T>(path)
+    return path0(this, path)
 }
 
 fun <T> path(json: JsonObject, path: String, clz: Class<T>): T? {
-    return JsonPath
-        .using(jsonPathConfig)
-        .parse(json)
-        .read<T>(path)
+    return path0(json as Any, path , clz)
 
 }
 
 fun <T> path(json: JsonArray, path: String, clz: Class<T>): T? {
-    return JsonPath
-        .using(jsonPathConfig)
-        .parse(json)
-        .read<T>(path)
-
+    return path0(json as Any, path , clz)
 }
 
 inline fun <reified T> JsonObject.pathOrNull(path: String): T? {
     return try {
-        JsonPath
-            .using(
-                jsonPathConfig
-            )
-            .parse(this)
-            .read<T>(path)
-
+        path0(this, path)
     } catch (e: Throwable) {
         null
     }
@@ -242,13 +247,7 @@ inline fun <reified T> JsonObject.pathOrNull(path: String): T? {
 
 inline fun <reified T> JsonArray.pathOrNull(path: String): T? {
     return try {
-        JsonPath
-            .using(
-                jsonPathConfig
-            )
-            .parse(this)
-            .read<T>(path)
-
+        path0(this, path)
     } catch (e: Throwable) {
         null
     }

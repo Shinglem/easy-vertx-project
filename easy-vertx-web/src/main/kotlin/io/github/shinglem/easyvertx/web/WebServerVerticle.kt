@@ -7,6 +7,8 @@ import io.vertx.core.Context
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpServerOptions
 import io.vertx.ext.web.Router
+import io.vertx.ext.web.handler.BodyHandler
+import io.vertx.ext.web.handler.LoggerHandler
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import mu.KotlinLogging
 import kotlin.reflect.full.createInstance
@@ -73,11 +75,21 @@ abstract class WebServerVerticle : CoroutineVerticle() {
             )
     }
 
+    open fun registerDefaultHandler() {
+        rootRouter.route().order(Int.MIN_VALUE).handler {
+            it.response().setChunked(true)
+        }
+        rootRouter.route().order(Int.MIN_VALUE).handler(LoggerHandler.create())
+        rootRouter.route().order(Int.MIN_VALUE).handler(BodyHandler.create(true))
+    }
+
     open override suspend fun start() {
         logger.debug("---------web start---------" + this.deploymentID)
 
 
         val server = vertx.createHttpServer(httpServerOptions)
+
+        registerDefaultHandler()
 
         findControllers().forEach {
             registerController(it)

@@ -17,14 +17,21 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger {}
 
 open class VertxMain(
-    configLoaders: MutableList<ConfigLoader> = mutableListOf(InnerProfileConfigLoader(), OuterProfileConfigLoader()),
-    val producer: VertxProducer = DefaultVertxProducer(configLoaders),
+    val producer: VertxProducer = DefaultVertxProducer()
 ) : Main {
+
+    constructor(
+        configLoaders: MutableList<ConfigLoader> = mutableListOf(
+            InnerProfileConfigLoader(),
+            OuterProfileConfigLoader()
+        ),
+        producer: VertxProducer = DefaultVertxProducer(configLoaders)
+    ) : this(producer)
 
 
     protected val verticleConfig = Global.config.path<JsonArray>("$.vertx.config.verticles") ?: JsonArray()
     val vertx = producer.vertx()
-    protected open val verticleClassName: (JsonObject)->String = { it.getString("class") }
+    protected open val verticleClassName: (JsonObject) -> String = { it.getString("class") }
     override fun start() {
         start { }
     }

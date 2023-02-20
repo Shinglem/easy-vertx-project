@@ -5,6 +5,7 @@ import io.github.shinglem.easyvertx.core.Global
 import io.github.shinglem.easyvertx.core.VertxProducer
 import io.github.shinglem.easyvertx.core.json.initJsonPath
 import io.github.shinglem.easyvertx.core.json.path
+import io.github.shinglem.easyvertx.core.json.path0
 import io.github.shinglem.easyvertx.core.json.registerJsonMapper
 import io.vertx.config.ConfigRetriever
 import io.vertx.config.ConfigRetrieverOptions
@@ -22,7 +23,7 @@ import java.util.concurrent.CountDownLatch
 private val logger = KotlinLogging.logger {}
 
 open class DefaultVertxProducer(
-    private val configLoaders: List<ConfigLoader>,
+    private val configLoaders: List<ConfigLoader> = mutableListOf(InnerProfileConfigLoader(), OuterProfileConfigLoader()),
     private val configRetrieverOptions: ConfigRetrieverOptions = ConfigRetrieverOptions().setScanPeriod(-1),
     private val isCluster: Boolean = false,
     private val clusterManager: ClusterManager? = null,

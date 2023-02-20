@@ -2,7 +2,7 @@ package test
 
 import io.github.shinglem.easyvertx.core.Global
 import io.github.shinglem.easyvertx.core.def.VertxMain
-import io.github.shinglem.easyvertx.core.json.path
+import io.github.shinglem.easyvertx.core.json.path0
 import io.vertx.core.Vertx
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import org.junit.jupiter.api.Test
@@ -19,7 +19,7 @@ open class TestVerticle : CoroutineVerticle() {
 
 
         println(Global.config)
-        println(Global.config.path("$.vertx"))
+        println(Global.config.path0("$.vertx"))
     }
 }
 

@@ -1,13 +1,8 @@
 package test
 
-import com.jayway.jsonpath.Configuration
-import com.jayway.jsonpath.JsonPath
-import com.jayway.jsonpath.Option
-import com.jayway.jsonpath.spi.json.JsonProvider
-import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider
 import com.jayway.jsonpath.spi.mapper.MappingProvider
 import io.github.shinglem.easyvertx.core.json.VertxJsonProvider
-import io.github.shinglem.easyvertx.core.json.path
+import io.github.shinglem.easyvertx.core.json.path0
 import io.github.shinglem.easyvertx.core.json.registerJsonMapper
 import io.vertx.core.json.JsonObject
 import io.vertx.core.json.jackson.DatabindCodec
@@ -39,7 +34,12 @@ class JsonTest {
 //        val json = JsonPath.parse(""" {"test" : "a"} """).read("$.test" , String::class.java)
 //        println(json)
 
-        val jsonObj = JsonObject(""" {"test" : "a"} """).path<String>("$.test")
+        val jsonObj = JsonObject(""" {"test" : "1"} """)
+            .let { path0<Int>(it, "$.test") }
         println(jsonObj)
+
+//        val a = DatabindCodec.mapper().convertValue<Int>("1")
+//        println(a)
+
     }
 }

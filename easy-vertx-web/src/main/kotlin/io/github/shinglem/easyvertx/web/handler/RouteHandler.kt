@@ -84,7 +84,7 @@ open class RouteHandler : FunctionHandler {
         }
 
         anno.methods.forEach {
-            route.method(HttpMethod.valueOf(it))
+            route.method(it.method)
         }
 
         val baseConsumes = classMetadata.get("routeBaseConsumes") as Array<String>
