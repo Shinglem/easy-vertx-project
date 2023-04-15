@@ -1,6 +1,5 @@
 package io.github.shinglem.easyvertx.core.util
 
-import io.vertx.ext.web.RoutingContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.memberFunctions
@@ -65,7 +64,7 @@ class Resolver constructor(
             .forEach {
                 val functionMetadata = mutableMapOf<String, Any?>().apply { this.putAll(classMetadata) }
                 functionMetadata.put("function", it)
-                functionMetadata.put("parameterFuncMap", mutableMapOf<KParameter, (RoutingContext) -> Any?>())
+                functionMetadata.put("parameterFuncMap", mutableMapOf<KParameter, (Any) -> Any?>())
 
 
                 val functionHandlerList = defaultFunctionHandlers.map { { it.resolve(functionMetadata, Default()) } } +
