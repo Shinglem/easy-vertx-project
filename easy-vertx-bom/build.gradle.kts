@@ -25,16 +25,14 @@ dependencies {
         api("com.fasterxml.jackson.dataformat:jackson-dataformat-properties:$jacksonVersion")
 
         //vertx
-        api(group = "io.vertx", name = "vertx-core", version = vertxVersion)
-        api(group = "io.vertx", name = "vertx-lang-kotlin", version = vertxVersion)
-        api(group = "io.vertx", name = "vertx-lang-kotlin-coroutines", version = vertxVersion)
-        api(group = "io.vertx", name = "vertx-config", version = vertxVersion)
-        api(group = "io.vertx", name = "vertx-config-yaml", version = vertxVersion)
-        api(group = "io.vertx", name = "vertx-web" , version = vertxVersion)
-
+        api("io.vertx:vertx-core:$vertxVersion")
+        api("io.vertx:vertx-lang-kotlin:$vertxVersion")
+        api("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion")
+        api("io.vertx:vertx-config:$vertxVersion")
+        api("io.vertx:vertx-config-yaml:$vertxVersion")
+        api("io.vertx:vertx-web:$vertxVersion")
         //log
         api("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
-
         //util
         api("com.jayway.jsonpath:json-path:2.7.0")
 
@@ -43,8 +41,8 @@ dependencies {
 
         //kotlin
         api(kotlin("stdlib"))
-        api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = kotlinCoroutineVersion)
-        api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-jdk8", version = kotlinCoroutineVersion)
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-core$kotlinCoroutineVersion")
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8$kotlinCoroutineVersion")
         api(kotlin("reflect"))
 
 
