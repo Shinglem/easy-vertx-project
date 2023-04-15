@@ -19,7 +19,7 @@ open class TestVerticle : CoroutineVerticle() {
 
 
         println(Global.config)
-        println(Global.config.path0("$.vertx"))
+        println(Global.config.path("$.vertx"))
     }
 }
 

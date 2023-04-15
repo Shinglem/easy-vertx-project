@@ -3,13 +3,83 @@ package io.github.shinglem.easyvertx.web.handler
 import io.github.shinglem.easyvertx.core.util.FunctionParameterHandler
 import io.github.shinglem.easyvertx.web.core.impl.*
 import io.github.shinglem.easyvertx.web.core.util.id.SnowFlake
-import io.vertx.core.json.JsonArray
-import io.vertx.core.json.JsonObject
+import io.vertx.core.MultiMap
+import io.vertx.core.buffer.Buffer
 import io.vertx.core.json.jackson.DatabindCodec
 import io.vertx.ext.web.RoutingContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
-import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.KType
+import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.starProjectedType
+import kotlin.reflect.javaType
+
+
+@OptIn(ExperimentalStdlibApi::class)
+fun typeConvert(buf: Buffer, type: KType): Any? {
+    val parser = DatabindCodec.createParser(buf)
+    val ret = parser.use {
+        DatabindCodec.mapper().let { mapper ->
+            mapper.readValue<Any?>(parser, mapper.constructType(type.javaType))
+        }
+    }
+    return ret
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+fun typeConvert(raw: Any?, type: KType): Any? {
+    val ret = DatabindCodec.mapper().let { mapper ->
+        mapper.convertValue<Any?>(raw, mapper.constructType(type.javaType))
+    }
+    return ret
+}
+
+fun resolveValue(value: Any?, parameter: KParameter, def: KClass<*>? = null): Any? {
+    if (value == null) {
+        return null
+    }
+    return when {
+        (def != null) && value::class.starProjectedType.isSubtypeOf(parameter.type) -> {
+            value
+        }
+
+        else -> {
+
+            when(value){
+                is Buffer -> {
+                    val paramType = parameter.type
+                    val param = typeConvert(value, paramType)
+                    param
+                }
+                is MultiMap -> {
+                    value.names().associateWith {
+                        value[it]
+                    }.let {
+                        val paramType = parameter.type
+                        val param = typeConvert(it, paramType)
+                        param
+                    }
+                }
+
+                else -> {
+                    val paramType = parameter.type
+                    val param = typeConvert(value, paramType)
+                    param
+                }
+            }
+
+        }
+    }
+}
+
+inline fun <reified V> getValueFunc(parameter : KParameter, crossinline getFunc : (RoutingContext)->V?) : (RoutingContext)->Any?{
+    return Func@{ rc: RoutingContext ->
+        val value = getFunc(rc) ?: return@Func null
+        val param = resolveValue(value , parameter  , V::class)
+        return@Func param
+    }
+}
+
 
 open class QueryParamHandler : FunctionParameterHandler {
 
@@ -34,11 +104,8 @@ open class QueryParamHandler : FunctionParameterHandler {
             }
         }
 
-        val getValueFunc = { rc: RoutingContext ->
-            val paramValue = rc.queryParam(paramName)
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-            val param = DatabindCodec.mapper().convertValue(paramValue, paramClz.javaObjectType)
-            param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.queryParam(paramName)
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
@@ -74,12 +141,8 @@ open class PathParamHandler : FunctionParameterHandler {
                 parameter.name ?: it
             }
         }
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc.pathParam(paramName) ?: return@Func null
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-            val param = DatabindCodec.mapper().convertValue(paramValue, paramClz.javaObjectType)
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.pathParam(paramName)
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
@@ -116,13 +179,10 @@ open class FormParamHandler : FunctionParameterHandler {
                 parameter.name ?: it
             }
         }
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc.request().getFormAttribute(paramName) ?: return@Func null
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-            val param = DatabindCodec.mapper().convertValue(paramValue, paramClz.javaObjectType)
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.request().getFormAttribute(paramName)
         }
+
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
             metadata.put("parameterFuncMap", mutableMapOf<KParameter, (RoutingContext) -> Any?>())
@@ -158,13 +218,10 @@ open class BodyParamHandler : FunctionParameterHandler {
                 parameter.name ?: it
             }
         }
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc.body().asJsonObject().getValue(paramName) ?: return@Func null
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-            val param = DatabindCodec.mapper().convertValue(paramValue, paramClz.javaObjectType)
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.body().asJsonObject().getValue(paramName)
         }
+
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
             metadata.put("parameterFuncMap", mutableMapOf<KParameter, (RoutingContext) -> Any?>())
@@ -189,38 +246,13 @@ open class BodyHandler : FunctionParameterHandler {
         return Body::class
     }
 
+
     @Suppress("UNCHECKED_CAST")
     override fun resolve(metadata: MutableMap<String, Any?>, annotation: Annotation) {
         val parameter = metadata.get("parameter") as KParameter
 
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc.body() ?: return@Func null
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-
-            val param = when {
-                paramClz.isSubclassOf(List::class) -> {
-                    paramValue.asJsonArray().list
-                }
-
-                paramClz.isSubclassOf(Array::class) -> {
-                    paramValue.asJsonArray().list.toTypedArray()
-                }
-
-                paramClz.isSubclassOf(JsonArray::class) -> {
-                    paramValue.asJsonArray()
-                }
-
-                paramClz.isSubclassOf(JsonObject::class) -> {
-                    paramValue.asJsonObject()
-                }
-
-                else -> {
-                    paramValue.asPojo(paramClz.javaObjectType)
-                }
-            }
-
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.body().buffer()
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
@@ -244,29 +276,15 @@ open class FormHandler : FunctionParameterHandler {
 
 
     override fun annotationKClass(): KClass<out Annotation> {
-        return Body::class
+        return Form::class
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun resolve(metadata: MutableMap<String, Any?>, annotation: Annotation) {
         val parameter = metadata.get("parameter") as KParameter
 
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc.request().formAttributes() ?: return@Func null
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-
-            val param = when {
-                paramClz.isSubclassOf(MutableMap::class) -> {
-                    paramValue
-                }
-
-                else -> {
-                    error("form parameter need type MultiMap")
-                }
-            }
-
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.request().formAttributes()
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
@@ -303,12 +321,8 @@ open class ParamHandler : FunctionParameterHandler {
                 parameter.name ?: it
             }
         }
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc.request().getParam(paramName) ?: return@Func null
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-            val param = DatabindCodec.mapper().convertValue(paramValue, paramClz.javaObjectType)
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.request().getParam(paramName)
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
@@ -339,22 +353,8 @@ open class ParamsHandler : FunctionParameterHandler {
     override fun resolve(metadata: MutableMap<String, Any?>, annotation: Annotation) {
         val parameter = metadata.get("parameter") as KParameter
 
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc.request().params() ?: return@Func null
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-
-            val param = when {
-                paramClz.isSubclassOf(MutableMap::class) -> {
-                    paramValue
-                }
-
-                else -> {
-                    error("form parameter need type MultiMap")
-                }
-            }
-
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.request().params()
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
@@ -385,22 +385,8 @@ open class HeadersHandler : FunctionParameterHandler {
     override fun resolve(metadata: MutableMap<String, Any?>, annotation: Annotation) {
         val parameter = metadata.get("parameter") as KParameter
 
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc.request().headers() ?: return@Func null
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-
-            val param = when {
-                paramClz.isSubclassOf(MutableMap::class) -> {
-                    paramValue
-                }
-
-                else -> {
-                    error("form parameter need type MultiMap")
-                }
-            }
-
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.request().headers()
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
@@ -436,12 +422,8 @@ open class HeaderHandler : FunctionParameterHandler {
                 parameter.name ?: it
             }
         }
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc.request().getHeader(paramName) ?: return@Func null
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-            val param = DatabindCodec.mapper().convertValue(paramValue, paramClz.javaObjectType)
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.request().getHeader(paramName)
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
@@ -472,22 +454,8 @@ open class RouteContextHandler : FunctionParameterHandler {
     override fun resolve(metadata: MutableMap<String, Any?>, annotation: Annotation) {
         val parameter = metadata.get("parameter") as KParameter
 
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-
-            val param = when {
-                paramClz.isSubclassOf(RoutingContext::class) -> {
-                    paramValue
-                }
-
-                else -> {
-                    error("form parameter need type RoutingContext")
-                }
-            }
-
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
@@ -517,22 +485,8 @@ open class HttpRequestHandler : FunctionParameterHandler {
     override fun resolve(metadata: MutableMap<String, Any?>, annotation: Annotation) {
         val parameter = metadata.get("parameter") as KParameter
 
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc.request()
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-
-            val param = when {
-                paramClz.isSubclassOf(RoutingContext::class) -> {
-                    paramValue
-                }
-
-                else -> {
-                    error("form parameter need type HttpServerRequest")
-                }
-            }
-
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.request()
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
@@ -562,22 +516,8 @@ open class HttpResponseHandler : FunctionParameterHandler {
     override fun resolve(metadata: MutableMap<String, Any?>, annotation: Annotation) {
         val parameter = metadata.get("parameter") as KParameter
 
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
-            val paramValue = rc.response()
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-
-            val param = when {
-                paramClz.isSubclassOf(RoutingContext::class) -> {
-                    paramValue
-                }
-
-                else -> {
-                    error("form parameter need type HttpServerRequest")
-                }
-            }
-
-            return@Func param
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
+            rc.response()
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {
@@ -609,23 +549,10 @@ open class IdHandler : FunctionParameterHandler {
     override fun resolve(metadata: MutableMap<String, Any?>, annotation: Annotation) {
         val parameter = metadata.get("parameter") as KParameter
 
-
-        val getValueFunc = Func@{ rc: RoutingContext ->
+        val getValueFunc = getValueFunc(parameter) { rc: RoutingContext ->
             val paramValue = snowFlake.nextId()
-            rc.put("request_id" , paramValue)
-            val paramClz = (parameter.type.classifier!! as KClass<*>)
-
-            val param = when {
-                paramClz.isSubclassOf(Long::class) -> {
-                    paramValue
-                }
-
-                else -> {
-                    error("id parameter need type Long")
-                }
-            }
-
-            return@Func param
+            rc.put("request_id", paramValue)
+            paramValue
         }
 
         val parameterFuncMap = metadata.get("parameterFuncMap") ?: kotlin.run {

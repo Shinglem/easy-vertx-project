@@ -6,7 +6,6 @@ import io.github.shinglem.easyvertx.core.util.FunctionHandler
 import io.github.shinglem.easyvertx.web.core.impl.Route
 import io.github.shinglem.easyvertx.web.core.impl.Route.Routes
 import io.github.shinglem.easyvertx.web.core.impl.RouteBase
-import io.vertx.core.http.HttpMethod
 import io.vertx.ext.web.Router
 import kotlin.reflect.KClass
 
@@ -22,11 +21,11 @@ open class RouteBaseHandler : ClassHandler {
         return RouteBase::class
     }
 
-    override fun resolve(classMetadata: MutableMap<String , Any?>, annotation: Annotation) {
+    override fun resolve(metadata: MutableMap<String , Any?>, annotation: Annotation) {
         val anno = annotation as RouteBase
-        classMetadata.put("routeBasePath", anno.path)
-        classMetadata.put("routeBaseProduce", anno.produces)
-        classMetadata.put("routeBaseConsumes", anno.consumes)
+        metadata.put("routeBasePath", anno.path)
+        metadata.put("routeBaseProduce", anno.produces)
+        metadata.put("routeBaseConsumes", anno.consumes)
     }
 
 }
@@ -43,17 +42,17 @@ open class RouteHandler : FunctionHandler {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun resolve(classMetadata: MutableMap<String , Any?>, annotation: Annotation) {
+    override fun resolve(metadata: MutableMap<String , Any?>, annotation: Annotation) {
         val anno = annotation as Route
-        val router = classMetadata.get("router") as Router
-        val routeBasePath = classMetadata.get("routeBasePath") as String? ?: ""
+        val router = metadata.get("router") as Router
+        val routeBasePath = metadata.get("routeBasePath") as String? ?: ""
 
 
         val route = router.route()
 
-        val routes = classMetadata.get("routes") as MutableList<io.vertx.ext.web.Route>? ?: kotlin.run {
-            classMetadata.put("routes",mutableListOf<io.vertx.ext.web.Route>())
-            classMetadata.get("routes") as MutableList<io.vertx.ext.web.Route>
+        val routes = metadata.get("routes") as MutableList<io.vertx.ext.web.Route>? ?: kotlin.run {
+            metadata.put("routes",mutableListOf<io.vertx.ext.web.Route>())
+            metadata.get("routes") as MutableList<io.vertx.ext.web.Route>
         }
 
         routes.add(route)
@@ -87,7 +86,7 @@ open class RouteHandler : FunctionHandler {
             route.method(it.method)
         }
 
-        val baseConsumes = classMetadata.get("routeBaseConsumes") as Array<String>
+        val baseConsumes = metadata.get("routeBaseConsumes") as Array<String>
         baseConsumes.forEach {
             route.consumes(it)
         }
@@ -95,7 +94,7 @@ open class RouteHandler : FunctionHandler {
             route.consumes(it)
         }
 
-        val baseProduce = classMetadata.get("routeBaseProduce") as Array<String>
+        val baseProduce = metadata.get("routeBaseProduce") as Array<String>
         baseProduce.forEach {
             route.produces(it)
         }
@@ -106,7 +105,7 @@ open class RouteHandler : FunctionHandler {
         if (anno.order != 0) {
             route.order(anno.order)
         }
-        classMetadata.put("handlerType" , anno.type)
+        metadata.put("handlerType" , anno.type)
 
     }
 
@@ -124,16 +123,10 @@ open class RoutesHandler : RouteHandler() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun resolve(classMetadata: MutableMap<String , Any?>, annotation: Annotation) {
+    override fun resolve(metadata: MutableMap<String , Any?>, annotation: Annotation) {
         val anno = annotation as Routes
-
-        val routes = classMetadata.get("routes") as MutableList<io.vertx.ext.web.Route>? ?: kotlin.run {
-            classMetadata.put("routes",mutableListOf<io.vertx.ext.web.Route>())
-            classMetadata.get("routes") as MutableList<io.vertx.ext.web.Route>
-        }
-
         anno.value.forEach {
-            super.resolve(classMetadata, it)
+            super.resolve(metadata, it)
         }
 
     }
