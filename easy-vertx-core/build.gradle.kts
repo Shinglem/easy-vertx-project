@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
 
-    api( platform(project(":easy-vertx-bom")))
+    api(platform(project(":easy-vertx-bom")))
 
     //jackson
     api("com.fasterxml.jackson.core:jackson-databind")

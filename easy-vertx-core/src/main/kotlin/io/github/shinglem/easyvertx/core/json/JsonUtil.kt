@@ -19,6 +19,7 @@ import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.core.json.jackson.DatabindCodec
 import io.vertx.kotlin.core.json.get
+import mu.KotlinLogging
 import java.io.InputStream
 import java.util.*
 
@@ -196,14 +197,19 @@ open class VertxJsonProvider() : AbstractJsonProvider() {
 val jsonPathConfig = Configuration.ConfigurationBuilder().jsonProvider(VertxJsonProvider())
     .mappingProvider(JacksonMappingProvider(DatabindCodec.mapper())).build()
 
-
+val JsonUtilLogger = KotlinLogging.logger {  }
 inline fun <reified T> path0(obj: Any, path: String): T? {
-    val value = JsonPath
-        .using(jsonPathConfig)
-        .parse(obj)
-        .read<Any?>(path)
+    val value = try {
+        JsonPath
+            .using(jsonPathConfig)
+            .parse(obj)
+            .read<Any?>(path)
+    } catch (e: Throwable) {
+        JsonUtilLogger.warn(e) { "get json path error : $path" }
+        return null
+    } ?: return null
 
-    if (value is T?) {
+    if (value is T) {
         return value
     } else {
         return DatabindCodec.mapper().convertValue<T>(value)
@@ -211,10 +217,15 @@ inline fun <reified T> path0(obj: Any, path: String): T? {
 }
 
 fun <T> path0(obj: Any, path: String, clz: Class<T>): T? {
-    val value = JsonPath
-        .using(jsonPathConfig)
-        .parse(obj)
-        .read<Any?>(path)
+    val value = try {
+        JsonPath
+            .using(jsonPathConfig)
+            .parse(obj)
+            .read<Any?>(path)
+    } catch (e: Throwable) {
+        JsonUtilLogger.warn(e) { "get json path error : $path" }
+        return null
+    } ?: return null
 
     return DatabindCodec.mapper().convertValue(value, clz)
 
@@ -229,12 +240,12 @@ inline fun <reified T> JsonArray.path(path: String): T? {
 }
 
 fun <T> path(json: JsonObject, path: String, clz: Class<T>): T? {
-    return path0(json as Any, path , clz)
+    return path0(json as Any, path, clz)
 
 }
 
 fun <T> path(json: JsonArray, path: String, clz: Class<T>): T? {
-    return path0(json as Any, path , clz)
+    return path0(json as Any, path, clz)
 }
 
 inline fun <reified T> JsonObject.pathOrNull(path: String): T? {
