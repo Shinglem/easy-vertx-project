@@ -1,0 +1,3 @@
+io.github.shinglem.easyvertx.logtracer.QueryRequestTraceTypeResolver
+io.github.shinglem.easyvertx.logtracer.RowSetTraceTypeResolver
+io.github.shinglem.easyvertx.logtracer.SqlResultImplTraceTypeResolver

@@ -37,6 +37,7 @@ dependencies {
     //util
     api("com.jayway.jsonpath" , "json-path" , "2.7.0").exclude("org.slf4j" , "slf4j-api")
 
+
     //kotlin
     api(kotlin("stdlib"))
     api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core")

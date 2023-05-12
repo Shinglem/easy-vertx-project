@@ -31,6 +31,7 @@ dependencies {
         api("io.vertx:vertx-config:$vertxVersion")
         api("io.vertx:vertx-config-yaml:$vertxVersion")
         api("io.vertx:vertx-web:$vertxVersion")
+        api("io.vertx:vertx-sql-client:$vertxVersion")
         //log
         api("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
         //util
