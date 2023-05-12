@@ -36,7 +36,7 @@ dependencies {
 
     //util
     api("com.jayway.jsonpath" , "json-path" , "2.7.0").exclude("org.slf4j" , "slf4j-api")
-
+    api("com.cronutils:cron-utils:9.2.0")
 
     //kotlin
     api(kotlin("stdlib"))
