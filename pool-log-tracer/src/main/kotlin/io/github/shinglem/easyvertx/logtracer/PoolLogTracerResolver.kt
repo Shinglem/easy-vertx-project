@@ -20,7 +20,7 @@ class QueryRequestTraceTypeResolver: TraceTypeResolver<QueryRequest> {
 
         return "\n" + """
                         sql => ${data.sql()}
-                        tuple => ${data.tuples().map { it.deepToString() }}
+                        tuple => ${data.tuples().map { it.logString() }}
                     """.trimIndent()
     }
 
@@ -37,7 +37,14 @@ class RowSetTraceTypeResolver: TraceTypeResolver<RowSet<*>> {
         }
         val cols = data.columnsNames()
             .map {
-                Column().header(it).with<Map<String, Any?>> { map -> map[it].toString() }
+                Column().header(it).with<Map<String, Any?>> { map -> map[it].toString().let {
+                    val str = it
+                    if (str.length > 20) {
+                        str.substring(0..19)+" ... "
+                    }else{
+                        str
+                    }
+                } }
             }
         val rows = data.map {
             if (it is Row) {
