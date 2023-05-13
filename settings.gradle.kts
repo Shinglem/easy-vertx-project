@@ -1,17 +1,13 @@
 pluginManagement {
     repositories {
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven("https://maven.aliyun.com/nexus/content/groups/public/")
         gradlePluginPortal()
         mavenLocal()
-//        maven("https://maven.aliyun.com/nexus/content/groups/public/")
-        maven("https://dl.bintray.com/kotlin/exposed")
         maven("https://jitpack.io")
-//        jcenter()
-        maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
         maven("https://clojars.org/repo/")
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
         mavenCentral()
         maven { setUrl("https://plugins.gradle.org/m2/") }
+        maven("https://oss.sonatype.org/content/repositories/snapshots/")
     }
 
     val kotlinVersion:String by settings

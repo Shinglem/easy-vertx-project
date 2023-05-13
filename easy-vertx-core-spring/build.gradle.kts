@@ -4,9 +4,8 @@ plugins {
     `maven-publish`
 }
 
-group = "io.github.shinglem.esay-vertx-project"
-val projectVersion :String by project
-version = projectVersion
+group = rootProject.group
+version = rootProject.version
 
 repositories {
     mavenCentral()
@@ -49,7 +48,7 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "io.github.shinglem.easy-vertx-project"
+            groupId = rootProject.group.toString()
             artifactId = "easy-vertx-core-spring"
 
 

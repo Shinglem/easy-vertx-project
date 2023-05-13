@@ -4,9 +4,10 @@ plugins {
     `maven-publish`
 }
 
-group = "io.github.shinglem.easy-vertx-project"
-val projectVersion :String by project
-version = projectVersion
+group = rootProject.group
+version = rootProject.version
+
+
 val vertxVersion: String by project
 val jacksonVersion: String by project
 val kotlinCoroutineVersion: String by project
@@ -46,7 +47,7 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "io.github.shinglem.easy-vertx-project"
+            groupId = rootProject.group.toString()
             artifactId = "easy-vertx-web-spring"
 
 

@@ -5,18 +5,16 @@ plugins {
 }
 val projectVersion :String by project
 version = projectVersion
+group = "com.github.Shinglem.easy-vertx-project"
 
 allprojects {
     repositories {
         mavenLocal()
-//        maven("https://maven.aliyun.com/nexus/content/groups/public/")
+        maven("https://maven.aliyun.com/nexus/content/groups/public/")
         mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://dl.bintray.com/kotlin/exposed")
         maven("https://jitpack.io")
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
         maven("https://clojars.org/repo/")
+        maven("https://oss.sonatype.org/content/repositories/snapshots/")
     }
 }
 
@@ -38,21 +36,21 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
-
+val jdkVersion : String by project
 
 tasks {
 
     compileJava {
-        sourceCompatibility = JavaVersion.VERSION_17.toString()
+        sourceCompatibility = jdkVersion
     }
     compileTestJava {
-        sourceCompatibility = JavaVersion.VERSION_17.toString()
+        sourceCompatibility = jdkVersion
     }
     compileKotlin {
-        kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
+        kotlinOptions.jvmTarget = jdkVersion
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
+        kotlinOptions.jvmTarget = jdkVersion
     }
 
 }
@@ -62,7 +60,7 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "io.github.shinglem"
+            groupId = rootProject.group.toString()
             artifactId = "easy-vertx-project"
 
 

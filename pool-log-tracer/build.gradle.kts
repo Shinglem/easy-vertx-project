@@ -4,7 +4,7 @@ plugins {
     `maven-publish`
 }
 
-group = "io.github.shinglem.esay-vertx-project"
+group = rootProject.group
 version = rootProject.version
 
 repositories {
@@ -47,4 +47,17 @@ tasks {
         kotlinOptions.jvmTarget = jdkVersion
     }
 
+}
+
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = rootProject.group.toString()
+            artifactId = "pool-log-tracer"
+
+
+            from(components["java"])
+        }
+    }
 }

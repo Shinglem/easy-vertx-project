@@ -3,9 +3,10 @@ plugins {
     kotlin("jvm")
     `maven-publish`
 }
-group = "io.github.shinglem.easy-vertx-project"
-val projectVersion :String by project
-version = projectVersion
+group = rootProject.group
+version = rootProject.version
+
+
 val vertxVersion: String by project
 val jacksonVersion: String by project
 val kotlinCoroutineVersion: String by project
@@ -19,7 +20,7 @@ dependencies {
     //vertx
     api(group = "io.vertx", name = "vertx-web")
     api("com.google.guava:guava:31.1-jre")
-    
+
     testApi("ch.qos.logback", "logback-classic", "1.4.5").exclude("org.slf4j" , "slf4j-api")
 //    testApi(project(":easy-vertx-core-default"))
     testApi(group = "io.vertx", name = "vertx-web-client", version = vertxVersion)
@@ -51,7 +52,7 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "io.github.shinglem.easy-vertx-project"
+            groupId = rootProject.group.toString()
             artifactId = "easy-vertx-web"
 
 
