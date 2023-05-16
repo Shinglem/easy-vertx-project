@@ -10,7 +10,7 @@ group = "com.github.Shinglem.easy-vertx-project"
 allprojects {
     repositories {
         mavenLocal()
-        maven("https://maven.aliyun.com/nexus/content/groups/public/")
+//        maven("https://maven.aliyun.com/nexus/content/groups/public/")
         mavenCentral()
         maven("https://jitpack.io")
         maven("https://clojars.org/repo/")
@@ -29,7 +29,7 @@ dependencies {
     api(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = kotlinCoroutineVersion)
     api(kotlin("reflect"))
 
-    testApi("org.junit.jupiter:junit-jupiter-api:5.6.0")
+    testApi("org.junit.jupiter:junit-jupiter-api:5.9.1")
     testApi("org.junit.jupiter:junit-jupiter-engine")
 }
 

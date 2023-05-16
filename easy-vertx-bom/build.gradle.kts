@@ -34,7 +34,7 @@ dependencies {
         //log
         api("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
         //util
-        api("com.jayway.jsonpath:json-path:2.7.0")
+        api("com.jayway.jsonpath:json-path:2.8.0")
 
 //        //spring
 //        api("org.springframework.boot","spring-boot-starter", springBootVersion)

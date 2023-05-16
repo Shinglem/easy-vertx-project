@@ -1,6 +1,6 @@
 pluginManagement {
     repositories {
-        maven("https://maven.aliyun.com/nexus/content/groups/public/")
+//        maven("https://maven.aliyun.com/nexus/content/groups/public/")
         gradlePluginPortal()
         mavenLocal()
         maven("https://jitpack.io")

@@ -34,7 +34,7 @@ dependencies {
     api("io.github.microutils","kotlin-logging-jvm")
 
     //util
-    api("com.jayway.jsonpath" , "json-path" , "2.7.0").exclude("org.slf4j" , "slf4j-api")
+    api("com.jayway.jsonpath" , "json-path").exclude("org.slf4j" , "slf4j-api")
     api("com.cronutils:cron-utils:9.2.0")
 
     //kotlin
@@ -45,8 +45,8 @@ dependencies {
 
 
 
-    testApi("ch.qos.logback", "logback-classic", "1.4.5").exclude("org.slf4j" , "slf4j-api")
-    testApi("org.junit.jupiter:junit-jupiter-api:5.6.0")
+    testApi("ch.qos.logback", "logback-classic", "1.4.6").exclude("org.slf4j" , "slf4j-api")
+    testApi("org.junit.jupiter:junit-jupiter-api:5.9.1")
     testApi("org.junit.jupiter:junit-jupiter-engine")
 }
 
